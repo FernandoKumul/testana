@@ -45,6 +45,10 @@
   
   <style>
 
+  *{
+    background-image: url();
+  }
+
   body{
     display: flex;
   }
