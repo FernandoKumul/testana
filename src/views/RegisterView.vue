@@ -3,6 +3,7 @@
     <div class="column_1">
       <h1>¡Bienvenido de nuevo!</h1>
       <h1>(～￣w￣)～</h1>
+      <img src="/src/assets/img/Logo.png" alt="logo">
       
     </div>
 
@@ -30,7 +31,9 @@
           <label for="confirm_password">Confirmar Contraseña</label>
         </FloatLabel>
 
+
         <Button label="Iniciar"/>
+        <br>
         <RouterLink to="login">
           ¿Ya tienes una cuenta? Inicia Sesión
         </RouterLink>
@@ -52,16 +55,33 @@
   
   <style>
 
-  *{
-    background-image: url();
-  }
-
   body{
     display: flex;
+    margin: auto;
   }
 
-  button{
+  img{
+    width: 50%;
+    display: flex;
+    margin-top: 30px;
 
   }
+
+  h1{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .column_1{
+    width: 100%;
+
+  }
+
+  .column_2{
+    width: 100%;
+  }
+
   </style>
+
   

@@ -47,6 +47,8 @@
 
   *{
     background-image: url();
+    margin: auto;
+
   }
 
   body{
