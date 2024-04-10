@@ -28,10 +28,10 @@
               </template>
               <template #footer>
                 <Divider />
-                <p class="mt-2">Sugerencias</p>
-                <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                <p class="mt-0">Sugerencias</p>
+                <ul class="pl-1 ml-1 mt-0" style="line-height: 1.5">
                   <li>Al menos una minúscula</li>
-                  <li>Al menos un caracter especila</li>
+                  <li>Al menos un caracter especial</li>
                   <li>Al menos una mayúscula</li>
                   <li>Al menos un número</li>
                   <li>Mínimo 8 caracteres</li>
@@ -79,6 +79,15 @@ const confirmPassword = ref('')
   
 <style>
 
+.mt-0{
+  font-size: 15px;
+}
+
+h6{
+  margin: 8px 0px;
+  font-size: 14px
+}
+
 body {
   display: flex;
 }
@@ -91,7 +100,6 @@ img {
 
 .circle-wrapper {
   display: flex;
-  /* justify-content: flex-end; */
 }
 
 .half-square {
@@ -104,7 +112,9 @@ img {
   align-items: center;
   justify-content: center;
   margin-left: 20rem;
+  animation: border-move 5s infinite both;
 }
+
 h2{
   color: white;
   font-size: 28px;
@@ -123,12 +133,14 @@ h2{
   flex-direction: column;
   justify-content: center;
   margin-left: 9.65rem;
+  width: 100%;
 }
 
 .FloatLabel {
   margin-left: 1.5rem;
   margin-bottom: 2rem;
 }
+
 button {
   --color: #FA8841;
   background: #F7B16C;
@@ -139,14 +151,16 @@ button {
   line-height: 2.5em;
   overflow: hidden;
   cursor: pointer;
- 
+
   font-size: 17px;
   z-index: 1;
   color: white;
   border: 2px solid #F7B16C;
   border-radius: 6px;
   position: relative;
-  margin-left: 3rem;
+  width: 100%;
+
+  margin: 20px 0;
 }
 
 button::before {
@@ -174,6 +188,16 @@ button:hover::before {
   left: -30px;
 }
 
+a{
+  font-size: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+a:hover{
+  cursor: pointer;
+}
+
 .p-inputtext{
   margin: 0;
   width: 100%;
@@ -184,6 +208,3 @@ button:hover::before {
 }
 
 </style>
-
-
-  

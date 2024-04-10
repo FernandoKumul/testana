@@ -89,7 +89,9 @@ h2{
   text-align: center;
   display: flex;
   flex-direction: column;
-  margin-left: 9.65rem;
+  justify-content: center;
+  /* margin-left: 9.65rem; */
+  width: 100%;
 }
 
 .FloatLabel {
