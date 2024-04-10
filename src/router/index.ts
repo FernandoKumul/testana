@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import LoginView from '@/views/LoginView.vue'
-import RegisterView from '@/views/RegisterView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import FAQView from '@/views/FAQView.vue'
 import TestView from '@/views/TestView.vue'
@@ -11,6 +9,8 @@ import TaCView from '@/views/TaCView.vue'
 import CreateTestView from '@/views/CreateTestView.vue'
 import EditTestView from '@/views/EditTestView.vue'
 import AnswerTestView from '@/views/AnswerTestView.vue'
+import LoginView from '@/views/LoginView.vue'
+import RegisterView from '@/views/RegisterView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

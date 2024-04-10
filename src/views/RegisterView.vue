@@ -43,7 +43,7 @@
 
           <FloatLabel>
             <Password  v-model="confirmPassword" :feedback="false" toggleMask></Password>
-            <label for="confirm-password">Confirmar Contraseña</label>
+            <label for="confirm-password">Confirmar contraseña</label>
           </FloatLabel>
 
           <button>Iniciar</button>
