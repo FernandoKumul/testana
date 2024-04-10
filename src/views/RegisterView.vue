@@ -1,7 +1,7 @@
 <template>
   <body>
     <div class="column_1">
-      <h1>¡Únete a nosotros! (～￣w￣)～</h1>
+      <h1>¡Únete a nosotros!</h1>
       
       <img src="/src/assets/img/Logo.png" alt="logo">
       
@@ -94,7 +94,7 @@ body {
 
 img {
   margin-top: 2rem;
-  width: 70%;
+  width: 300px;
   display: flex;
 }
 
@@ -103,8 +103,7 @@ img {
 }
 
 .half-square {
-  width: 650px; 
-  height: 695px;
+  width: 761px; 
   background-color: #7C0405;
   border-radius: 15rem 0 0 15rem;
   display: flex;
@@ -121,7 +120,6 @@ h2{
 }
 
 .container {
-  margin-left: 3rem;
   background-color: white;
   border-radius: 10px;
   padding: 50px 40px;
@@ -137,7 +135,6 @@ h2{
 }
 
 .FloatLabel {
-  margin-left: 1.5rem;
   margin-bottom: 2rem;
 }
 
