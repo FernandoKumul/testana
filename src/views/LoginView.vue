@@ -1,11 +1,14 @@
 <template>
   <body>
+    <img class="register_back" src="/src/assets/img/Register.png" alt="register_back">
+
     <div class="column_1">
       <h1>¡Bienvenido de nuevo!</h1>
       <img src="/src/assets/img/Logo.png" alt="logo">
     </div>
 
-    <div class="circle-wrapper">
+    <div class="column_2">
+      <div class="circle-wrapper">
       <div class="half-square">
         <h2>Iniciar Sesión</h2>
         <div class="container">
@@ -28,6 +31,9 @@
         </div>
       </div>
     </div>
+
+  </div>
+
   </body>
 </template>
 
@@ -44,9 +50,10 @@ const dataRegister = reactive({
 const confirmPassword = ref('')
 </script>
   
-<style>
+<style scoped>
 body {
   display: flex;
+  margin: 0;
 }
 
 img {
@@ -55,31 +62,41 @@ img {
   display: flex;
 }
 
+.column_2{
+  width: 70%;
+  display: flex;
+  z-index: 1;
+}
+
 .circle-wrapper {
+  width: 100%;
   display: flex;
 }
 
 .half-square {
-  width: 761px; 
+  width: 100%;
   background-color: #7C0405;
   border-radius: 15rem 0 0 15rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-left: 20rem;
-  animation: border-move 5s infinite both;
+  align-content: center;
+  margin-left: 15%;
+  /* animation: border-move 5s infinite both; */
 }
 
 h2{
   color: white;
   font-size: 28px;
+  margin-left: 10%;
 }
 
 .container {
   background-color: white;
   border-radius: 10px;
   padding: 50px 40px;
+  margin-left: 10%;
 }
 
 .column_1 {
@@ -87,8 +104,18 @@ h2{
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* margin-left: 9.65rem; */
+  align-content: center;
+  align-items: center;
+  margin-left: 10%;
+  width: 30%;
+  z-index: 1;
+}
+
+.register_back{
   width: 100%;
+  position: fixed;
+  z-index: 0;
+  object-fit: contain;
 }
 
 .FloatLabel {
@@ -100,19 +127,19 @@ button {
   background: #F7B16C;
   font-family: inherit;
   display: inline-block;
-  width: 10em;
-  height: 2.6em;
-  line-height: 2.5em;
+
   overflow: hidden;
   cursor: pointer;
- 
+
   font-size: 17px;
   z-index: 1;
   color: white;
   border: 2px solid #F7B16C;
   border-radius: 6px;
   position: relative;
+  width: 100%;
 
+  padding: 9px 0px;
   margin: 20px 0;
 }
 
