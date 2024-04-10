@@ -11,26 +11,12 @@
         <h2>Iniciar Sesión</h2>
         <div class="container">
           <FloatLabel class="FloatLabel">
-            <InputText id="email" v-model="email"/>
+            <InputText id="email" v-model="dataRegister.email"/>
             <label for="email">Email</label>
           </FloatLabel>
 
-          <FloatLabel class="FloatLabel">
-            <Password id="password" v-model="value">
-              <template #header>
-                <h6>Crea una contraseña</h6>
-              </template>
-              <template #footer>
-                <Divider />
-                <p class="mt-2">Sugerencias</p>
-                <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
-                  <li>Al menos una minúscula</li>
-                  <li>Al menos una mayúscula</li>
-                  <li>Al menos un número</li>
-                  <li>Mínimo 8 caracteres</li>
-                </ul>
-              </template>
-            </Password>
+          <FloatLabel>
+            <Password  v-model="confirmPassword" :feedback="false" toggleMask></Password>
             <label for="password">Contraseña</label>
           </FloatLabel>
 
@@ -47,29 +33,31 @@
 </template>
 
 <script setup>
-import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import FloatLabel from 'primevue/floatlabel';
 import Password from 'primevue/password';
+import {ref, reactive} from 'vue';
+
+const dataRegister = reactive({
+  email: ''
+})
+
+const confirmPassword = ref('')
 </script>
   
 <style>
-* {
-  background-image: url();
-}
-
 body {
   display: flex;
 }
+
 img {
   margin-top: 2rem;
-  width: 85%;
+  width: 70%;
   display: flex;
 }
 
 .circle-wrapper {
   display: flex;
-  justify-content: flex-end;
 }
 
 .half-square {
@@ -80,16 +68,17 @@ img {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   margin-left: 20rem;
+  animation: border-move 5s infinite both;
 }
+
 h2{
   color: white;
-  margin-top: 8rem;
-  margin-left: 3rem;
+  font-size: 28px;
 }
+
 .container {
-  margin-top: 2rem;
   margin-left: 3rem;
   background-color: white;
   border-radius: 10px;
@@ -98,14 +87,16 @@ h2{
 
 .column_1 {
   text-align: center;
+  display: flex;
+  flex-direction: column;
   margin-left: 9.65rem;
-  margin-top: 10rem;
 }
 
 .FloatLabel {
   margin-left: 1.5rem;
   margin-bottom: 2rem;
 }
+
 button {
   --color: #FA8841;
   background: #F7B16C;
@@ -123,7 +114,8 @@ button {
   border: 2px solid #F7B16C;
   border-radius: 6px;
   position: relative;
-  margin-left: 3rem;
+
+  margin: 20px 0;
 }
 
 button::before {
@@ -151,5 +143,31 @@ button:hover::before {
   left: -30px;
 }
 
+a{
+  font-size: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
 
+a:hover{
+  cursor: pointer;
+}
+
+/* @keyframes border-move {
+  0% {
+    border-radius: 15rem 0 0 15rem;
+  }
+
+  25% {
+    border-radius: 80rem 0 0 10rem;
+  }
+
+  50% {
+    border-radius: 5rem 0 0 30rem;
+  }
+
+  100% {
+    border-radius: 15rem 0 0 15rem;
+  }
+} */
 </style>

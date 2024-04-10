@@ -2,7 +2,6 @@
 *::before,
 *::after {
   box-sizing: border-box;
-  margin: 0;
   font-weight: normal;
 }
 
@@ -10,6 +9,7 @@ body {
   min-height: 100vh;
   color: #212427;
   background: white;
+  margin: 0;
   font-family:
     Inter,
     -apple-system,
@@ -27,4 +27,13 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.p-inputtext{
+  margin: 0;
+  width: 100%;
+}
+
+.p-float-label{
+  margin-left: 0;
 }
