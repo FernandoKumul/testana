@@ -14,16 +14,18 @@
           <h2>Iniciar Sesión</h2>
           <div class="container">
             <form @submit.prevent="submitForm">
-              <FloatLabel class="FloatLabel">
-                <InputText id="email" v-model="dataLogin.email" />
+              <FloatLabel>
+                <InputText id="email" v-model="dataLogin.email" :invalid="!validateEmail" />
                 <label for="email">Email</label>
               </FloatLabel>
+              <small v-if="!validateEmail" id="username-help">Ingresa un email valido.</small>
 
-              <FloatLabel>
-                <Password v-model="dataLogin.password" :feedback="false" toggleMask strongRegex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,50}$"></Password>
+              <FloatLabel class="FloatLabel">
+                <Password inputId="password" v-model="dataLogin.password" :feedback="false" toggleMask
+                  strongRegex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,50}$" :invalid="!validatePassword" />
                 <label for="password">Contraseña</label>
               </FloatLabel>
-
+              <small v-if="!validateEmail" id="username-help">La contraseña es requerida.</small>
               <button>Iniciar</button>
             </form>
             <br>
@@ -43,19 +45,49 @@
 import InputText from 'primevue/inputtext';
 import FloatLabel from 'primevue/floatlabel';
 import Password from 'primevue/password';
-import { reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import type { IUserLogin } from '@/interfaces/IUserLogin';
 import UserService from '@/services/AuthService'
 import router from '@/router';
 
 const service = new UserService()
+const regexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 const dataLogin = reactive<IUserLogin>({
   email: '',
   password: ''
 })
 
+const dirtyForm = ref(false)
+
+const validateEmail  = computed(() => {
+  if (!dirtyForm.value) return true
+
+  if (dataLogin.email.trim().length === 0) {
+    return false
+  }
+
+  if (!regexEmail.test(dataLogin.email)) {
+    return false
+  }
+
+  return true
+})
+
+const validatePassword = computed(() => {
+  if (!dirtyForm.value) return true
+
+  if (dataLogin.email.trim().length === 0) {
+    return false
+  }
+
+  return true
+})
+
 const submitForm = async () => {
+  dirtyForm.value = true
+  if(!validatePassword.value || !validateEmail.value) return
+  
   try {
     await service.login({ ...dataLogin })
     router.push({ name: 'dashboard' })
@@ -115,6 +147,10 @@ h2 {
   margin-left: 10%;
 }
 
+.container small{
+  color: #f87171;
+}
+
 .column_1 {
   text-align: center;
   display: flex;
@@ -135,7 +171,7 @@ h2 {
 }
 
 .FloatLabel {
-  margin-bottom: 2rem;
+  margin-top: 2rem;
 }
 
 a {
