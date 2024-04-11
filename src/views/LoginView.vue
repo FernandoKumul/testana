@@ -37,7 +37,7 @@
   </body>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import InputText from 'primevue/inputtext';
 import FloatLabel from 'primevue/floatlabel';
 import Password from 'primevue/password';

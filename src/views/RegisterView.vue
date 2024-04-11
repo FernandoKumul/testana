@@ -15,7 +15,7 @@
 
             <!-- <form @submit.prevent="submitForm"> -->
               <FloatLabel class="FloatLabel">
-                <InputText id="username" v-model="dataRegister.username"/>
+                <InputText id="username" v-model="dataRegister.name"/>
                 <label for="username">Nombre Usuario</label>
               </FloatLabel>
 
@@ -31,7 +31,7 @@
                   </template>
                   <template #footer>
                     <Divider />
-                    <p class="mt-0">Sugerencias</p>
+                    <p class="mt-0">Requerimientos</p>
                     <ul class="pl-1 ml-1 mt-0" style="line-height: 1.5">
                       <li>Al menos una minúscula</li>
                       <li>Al menos un caracter especial</li>
@@ -66,18 +66,17 @@
   </body>
 </template>
 
-<script setup>
+<script lang="ts" setup>
   import InputText from 'primevue/inputtext';
   import FloatLabel from 'primevue/floatlabel';
   import Password from 'primevue/password';
-  // import { IUser } from '@/interfaces/IUser';
+  import type { IUserRegister } from '@/interfaces/IUserRegister';
   // import router from '@/router';
   // import UserService from '@/services/UserService';
   import {ref, reactive} from 'vue';
 
-  // const dataRegister = reactive<IUser>({
-    const dataRegister = reactive({
-    username: '',
+  const dataRegister = reactive<IUserRegister>({
+    name: '',
     email: '' ,
     password:''
   })

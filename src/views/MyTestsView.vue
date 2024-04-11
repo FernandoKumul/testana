@@ -2,8 +2,12 @@
     <div class="about">
       <h1>This is an Mi tests page</h1>
     </div>
-  </template>
+</template>
+
+<script lang="ts" setup>
+
+</script>
   
-  <style scoped>
-  </style>
+<style scoped>
+</style>
   
