@@ -1,10 +1,11 @@
 <template>
+
   <body>
-    <img class="register_back" src="/src/assets/img/Register.png" alt="register_back">
+    <img class="register_back" src="/src/assets/img/Register.png" alt="register_back" />
 
     <div class="column_1">
       <h1>¡Únete a nosotros!</h1>
-      <img src="/src/assets/img/Logo.png" alt="logo">
+      <img src="/src/assets/img/Logo.png" alt="logo" />
     </div>
 
     <div class="column_2">
@@ -12,15 +13,14 @@
         <div class="half-square">
           <h2>Registro</h2>
           <div class="container">
-
-            <!-- <form @submit.prevent="submitForm"> -->
+            <form @submit.prevent="submitForm">
               <FloatLabel class="FloatLabel">
-                <InputText id="username" v-model="dataRegister.name"/>
+                <InputText id="username" v-model="dataRegister.name" />
                 <label for="username">Nombre Usuario</label>
               </FloatLabel>
 
               <FloatLabel class="FloatLabel">
-                <InputText id="email" v-model="dataRegister.email"/>
+                <InputText id="email" v-model="dataRegister.email" />
                 <label for="email">Email</label>
               </FloatLabel>
 
@@ -45,62 +45,59 @@
               </FloatLabel>
 
               <FloatLabel>
-                <Password  v-model="confirmPassword" :feedback="false" toggleMask></Password>
+                <Password v-model="confirmPassword" :feedback="false" toggleMask strongRegex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,50}$"></Password>
                 <label for="confirm-password">Confirmar contraseña</label>
               </FloatLabel>
 
-            <!-- </form> -->
-
-            <button>Iniciar</button>
-
-            <br>
-            <RouterLink to="login">
-              ¿Ya tienes una cuenta? Inicia sesión
-            </RouterLink>
+              <button>Iniciar</button>
+            </form>
+            <br />
+            <RouterLink to="login"> ¿Ya tienes una cuenta? Inicia sesión </RouterLink>
           </div>
         </div>
+      </div>
     </div>
-
-  </div>
-
   </body>
 </template>
 
 <script lang="ts" setup>
-  import InputText from 'primevue/inputtext';
-  import FloatLabel from 'primevue/floatlabel';
-  import Password from 'primevue/password';
-  import type { IUserRegister } from '@/interfaces/IUserRegister';
-  // import router from '@/router';
-  // import UserService from '@/services/UserService';
-  import {ref, reactive} from 'vue';
+import { ref, reactive } from 'vue'
+import InputText from 'primevue/inputtext'
+import FloatLabel from 'primevue/floatlabel'
+import Password from 'primevue/password'
+import router from '@/router';
+import UserService from '@/services/AuthService'
+import type { IUserRegister } from '@/interfaces/IUserRegister'
 
-  const dataRegister = reactive<IUserRegister>({
-    name: '',
-    email: '' ,
-    password:''
-  })
+const service = new UserService()
+const dataRegister = reactive<IUserRegister>({
+  name: '',
+  email: '',
+  password: ''
+})
 
-  const confirmPassword = ref('')
+const confirmPassword = ref('')
 
-  // const validatorEmail = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[^\da-zA-Z]).{8,50}$/
-  // const service = new UserService()
+// const validatorEmail = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[^\da-zA-Z]).{8,50}$/
 
-  // const submitForm = async () => {
-
-  // }
-
+const submitForm = async () => {
+  try {
+    await service.register({ ...dataRegister })
+    router.push({name: 'login'})
+  } catch (error) {
+    //Poner una alerta o algo aquí
+  }
+}
 </script>
-  
-<style scoped>
 
-.mt-0{
+<style scoped>
+.mt-0 {
   font-size: 15px;
 }
 
-h6{
+h6 {
   margin: 8px 0px;
-  font-size: 14px
+  font-size: 14px;
 }
 
 body {
@@ -108,14 +105,13 @@ body {
   margin: 0;
 }
 
-
 img {
   margin-top: 2rem;
   width: 300px;
   display: flex;
 }
 
-.column_2{
+.column_2 {
   width: 70%;
   display: flex;
   z-index: 1;
@@ -127,8 +123,8 @@ img {
 }
 
 .half-square {
-  width: 100%; 
-  background-color: #7C0405;
+  width: 100%;
+  background-color: #7c0405;
   border-radius: 15rem 0 0 15rem;
   display: flex;
   flex-direction: column;
@@ -139,7 +135,7 @@ img {
   /* animation: border-move 5s infinite both; */
 }
 
-h2{
+h2 {
   color: white;
   font-size: 28px;
   margin-left: 10%;
@@ -164,7 +160,7 @@ h2{
   z-index: 1;
 }
 
-.register_back{
+.register_back {
   width: 100%;
   position: fixed;
   z-index: 0;
@@ -175,23 +171,22 @@ h2{
   margin-bottom: 2rem;
 }
 
-a{
+a {
   font-size: 14px;
   display: flex;
   justify-content: flex-end;
 }
 
-a:hover{
+a:hover {
   cursor: pointer;
 }
 
-.p-inputtext{
+.p-inputtext {
   margin: 0;
   width: 100%;
 }
 
-.p-float-label{
+.p-float-label {
   margin-left: 0;
 }
-
 </style>

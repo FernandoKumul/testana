@@ -1,4 +1,5 @@
 <template>
+
   <body>
     <img class="register_back" src="/src/assets/img/Register.png" alt="register_back">
 
@@ -9,30 +10,31 @@
 
     <div class="column_2">
       <div class="circle-wrapper">
-      <div class="half-square">
-        <h2>Iniciar Sesión</h2>
-        <div class="container">
-          <FloatLabel class="FloatLabel">
-            <InputText id="email" v-model="dataRegister.email"/>
-            <label for="email">Email</label>
-          </FloatLabel>
+        <div class="half-square">
+          <h2>Iniciar Sesión</h2>
+          <div class="container">
+            <form @submit.prevent="submitForm">
+              <FloatLabel class="FloatLabel">
+                <InputText id="email" v-model="dataLogin.email" />
+                <label for="email">Email</label>
+              </FloatLabel>
 
-          <FloatLabel>
-            <Password  v-model="confirmPassword" :feedback="false" toggleMask></Password>
-            <label for="password">Contraseña</label>
-          </FloatLabel>
+              <FloatLabel>
+                <Password v-model="dataLogin.password" :feedback="false" toggleMask strongRegex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,50}$"></Password>
+                <label for="password">Contraseña</label>
+              </FloatLabel>
 
-          <button>Iniciar</button>
-
-          <br>
-          <RouterLink to="register">
-            ¿Aún no tienes una cuenta? Regístrate
-          </RouterLink>
+              <button>Iniciar</button>
+            </form>
+            <br>
+            <RouterLink to="register">
+              ¿Aún no tienes una cuenta? Regístrate
+            </RouterLink>
+          </div>
         </div>
       </div>
-    </div>
 
-  </div>
+    </div>
 
   </body>
 </template>
@@ -41,15 +43,29 @@
 import InputText from 'primevue/inputtext';
 import FloatLabel from 'primevue/floatlabel';
 import Password from 'primevue/password';
-import {ref, reactive} from 'vue';
+import { reactive } from 'vue';
+import { RouterLink } from 'vue-router';
+import type { IUserLogin } from '@/interfaces/IUserLogin';
+import UserService from '@/services/AuthService'
+import router from '@/router';
 
-const dataRegister = reactive({
-  email: ''
+const service = new UserService()
+const dataLogin = reactive<IUserLogin>({
+  email: '',
+  password: ''
 })
 
-const confirmPassword = ref('')
+const submitForm = async () => {
+  try {
+    await service.login({ ...dataLogin })
+    router.push({ name: 'dashboard' })
+  } catch (error) {
+    //Poner una alerta o algo aquí
+  }
+}
+
 </script>
-  
+
 <style scoped>
 body {
   display: flex;
@@ -62,7 +78,7 @@ img {
   display: flex;
 }
 
-.column_2{
+.column_2 {
   width: 70%;
   display: flex;
   z-index: 1;
@@ -86,7 +102,7 @@ img {
   /* animation: border-move 5s infinite both; */
 }
 
-h2{
+h2 {
   color: white;
   font-size: 28px;
   margin-left: 10%;
@@ -111,7 +127,7 @@ h2{
   z-index: 1;
 }
 
-.register_back{
+.register_back {
   width: 100%;
   position: fixed;
   z-index: 0;
@@ -122,13 +138,13 @@ h2{
   margin-bottom: 2rem;
 }
 
-a{
+a {
   font-size: 14px;
   display: flex;
   justify-content: flex-end;
 }
 
-a:hover{
+a:hover {
   cursor: pointer;
 }
 
