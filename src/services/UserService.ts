@@ -1,3 +1,4 @@
+import { IUserRegister } from './../interfaces/IUserRegister';
 import type { IUser } from "@/interfaces/IUser";
 import axios, { AxiosError } from "axios";
 import { ref, type Ref } from "vue";
@@ -21,7 +22,7 @@ export default class UserService {
     return this.user
   }
 
-  async register(dataUser: IUser): Promise<void> {
+  async register(dataUser: IUserRegister): Promise<void> {
     try {
       await axios.post(`${BASE_URL}/register`, dataUser)
     } catch (e) {
