@@ -37,8 +37,8 @@
       </div>
 
     </div>
-
   </body>
+  <Toast />
 </template>
 
 <script lang="ts" setup>
@@ -50,8 +50,13 @@ import { RouterLink } from 'vue-router';
 import type { IUserLogin } from '@/interfaces/IUserLogin';
 import UserService from '@/services/AuthService'
 import router from '@/router';
+import { useToast } from 'primevue/usetoast';
+import { AxiosError } from 'axios';
+import Toast from 'primevue/toast';
 
+const toast = useToast()
 const service = new UserService()
+
 const regexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 const dataLogin = reactive<IUserLogin>({
   email: '',
@@ -92,7 +97,13 @@ const submitForm = async () => {
     await service.login({ ...dataLogin })
     router.push({ name: 'dashboard' })
   } catch (error) {
-    //Poner una alerta o algo aquí
+    if (error instanceof AxiosError) {
+      if(error.response?.status === 400) {
+        console.log('hello')
+        toast.add({ severity: 'error', summary: 'Credenciales Invalidas', detail: 'Revisa tus credenciales', life: 6000 });  
+      }
+      
+    }
   }
 }
 

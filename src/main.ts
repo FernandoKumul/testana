@@ -9,10 +9,13 @@ import PrimeVue from 'primevue/config';
 // import "primevue/resources/themes/aura-light-green/theme.css";
 import Button from 'primevue/button';
 import './assets/theme/aura-light/theme.css'
+import ToastService from 'primevue/toastservice';
+
 
 const app = createApp(App)
 app.use(PrimeVue);
 app.use(router)
 app.component('Button', Button)
+app.use(ToastService);
 
 app.mount('#app')
