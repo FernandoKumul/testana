@@ -26,7 +26,7 @@
                 <label for="password">Contraseña</label>
               </FloatLabel>
               <small v-if="!validateEmail" id="username-help">La contraseña es requerida.</small>
-              <button>Iniciar</button>
+              <Button type="submit" label="Iniciar" />
             </form>
             <br>
             <RouterLink to="register">
@@ -53,6 +53,7 @@ import router from '@/router';
 import { useToast } from 'primevue/usetoast';
 import { AxiosError } from 'axios';
 import Toast from 'primevue/toast';
+import Button from 'primevue/button';
 
 const toast = useToast()
 const service = new UserService()
@@ -99,10 +100,10 @@ const submitForm = async () => {
   } catch (error) {
     if (error instanceof AxiosError) {
       if(error.response?.status === 400) {
-        console.log('hello')
-        toast.add({ severity: 'error', summary: 'Credenciales Invalidas', detail: 'Revisa tus credenciales', life: 6000 });  
+        return toast.add({ severity: 'error', summary: 'Credenciales Invalidas', detail: 'Revisa tus credenciales', life: 6000 });  
       }
       
+      return toast.add({ severity: 'error', summary: 'Oops... Ocurrió un error', detail: 'Intentalo más tarde', life: 6000 });
     }
   }
 }
@@ -193,6 +194,11 @@ a {
 
 a:hover {
   cursor: pointer;
+}
+
+.p-button {
+  width: 100%;
+  margin: 20px 0;
 }
 
 /* @keyframes border-move {
