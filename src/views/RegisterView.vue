@@ -1,6 +1,6 @@
 <template>
 
-  <body>
+  <main>
     <img class="register_back" src="/src/assets/img/Register.png" alt="register_back" />
 
     <div class="column_1">
@@ -14,18 +14,21 @@
           <h2>Registro</h2>
           <div class="container">
             <form @submit.prevent="submitForm">
-              <FloatLabel class="FloatLabel">
-                <InputText id="username" v-model="dataRegister.name" />
+              <FloatLabel>
+                <InputText id="username" v-model="dataRegister.name" :invalid="!validateName"/>
                 <label for="username">Nombre Usuario</label>
               </FloatLabel>
+              <small v-if="!validateName">El nombre es un campo obligatorio.</small>
 
               <FloatLabel class="FloatLabel">
-                <InputText id="email" v-model="dataRegister.email" />
+                <InputText id="email" type="email" v-model="dataRegister.email" :invalid="!validateEmail" />
                 <label for="email">Email</label>
               </FloatLabel>
+              <small v-if="!validateEmail">Ingresa un email valido.</small>
 
               <FloatLabel class="FloatLabel">
-                <Password id="password" v-model="dataRegister.password" toggleMask>
+                <Password inputId="password" :invalid="!validatePassword" v-model="dataRegister.password" toggleMask
+                  strongRegex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,50}$" >
                   <template #header>
                     <h6>Crea una contraseña</h6>
                   </template>
@@ -43,13 +46,15 @@
                 </Password>
                 <label for="password">Contraseña</label>
               </FloatLabel>
+              <small v-if="!validatePassword">Ingresa una contraseña valida.</small>
 
-              <FloatLabel>
-                <Password v-model="confirmPassword" :feedback="false" toggleMask strongRegex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,50}$"></Password>
+              <FloatLabel class="FloatLabel">
+                <Password v-model="confirmPassword" :feedback="false" toggleMask :invalid="!validateConfirmPassword" />
                 <label for="confirm-password">Confirmar contraseña</label>
               </FloatLabel>
+              <small v-if="!validateConfirmPassword">La contraseñas no coinciden.</small>
 
-              <button>Iniciar</button>
+              <Button :loading="loading" type="submit" label="Iniciar" />
             </form>
             <br />
             <RouterLink to="login"> ¿Ya tienes una cuenta? Inicia sesión </RouterLink>
@@ -57,19 +62,30 @@
         </div>
       </div>
     </div>
-  </body>
+  </main>
+  <Toast />
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
 import Password from 'primevue/password'
 import router from '@/router';
 import UserService from '@/services/AuthService'
 import type { IUserRegister } from '@/interfaces/IUserRegister'
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
+import { AxiosError } from 'axios';
 
+const toast = useToast()
 const service = new UserService()
+const regexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,50}$/
+
+const loading = ref(false)
+const dirtyForm = ref(false)
+
 const dataRegister = reactive<IUserRegister>({
   name: '',
   email: '',
@@ -78,14 +94,73 @@ const dataRegister = reactive<IUserRegister>({
 
 const confirmPassword = ref('')
 
-// const validatorEmail = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[^\da-zA-Z]).{8,50}$/
+const validateEmail  = computed(() => {
+  if (!dirtyForm.value) return true
+
+  if (dataRegister.email.trim().length === 0) {
+    return false
+  }
+
+  if (!regexEmail.test(dataRegister.email)) {
+    return false
+  }
+
+  return true
+})
+
+const validateName = computed(() => {
+  if (!dirtyForm.value) return true
+
+  if (dataRegister.name.trim().length === 0) {
+    return false
+  }
+
+  return true
+})
+
+const validatePassword  = computed(() => {
+  if (!dirtyForm.value) return true
+
+  if (dataRegister.password.trim().length === 0) {
+    return false
+  }
+
+  if (!regexPassword.test(dataRegister.password)) {
+    return false
+  }
+
+  return true
+})
+
+const validateConfirmPassword  = computed(() => {
+  if (!validatePassword.value) return true
+
+  if (confirmPassword.value !== dataRegister.password) {
+    return false
+  }
+
+  return true
+})
 
 const submitForm = async () => {
+  dirtyForm.value = true
+  if(!validateName.value || !validateEmail.value ||
+    !validatePassword.value || !validateConfirmPassword.value) return
+
   try {
+    loading.value = true
     await service.register({ ...dataRegister })
     router.push({name: 'login'})
   } catch (error) {
-    //Poner una alerta o algo aquí
+    if (error instanceof AxiosError) {
+      if(error.response?.data.message === "El correo ya está registrado en la base de datos.") {
+        return toast.add({ severity: 'error', summary: 'El email ya está registrado', detail: 'Intente registrarse con otro email', life: 6000 });  
+      }
+      
+      return toast.add({ severity: 'error', summary: 'Oops... Ocurrió un error', detail: 'Intentelo más tarde', life: 6000 });
+    }
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -100,9 +175,10 @@ h6 {
   font-size: 14px;
 }
 
-body {
+main {
   display: flex;
   margin: 0;
+  min-height: 100vh;
 }
 
 img {
@@ -148,6 +224,10 @@ h2 {
   margin-left: 10%;
 }
 
+.container small{
+  color: #f87171;
+}
+
 .column_1 {
   text-align: center;
   display: flex;
@@ -168,7 +248,7 @@ h2 {
 }
 
 .FloatLabel {
-  margin-bottom: 2rem;
+  margin-top: 2rem;
 }
 
 a {
@@ -188,5 +268,10 @@ a:hover {
 
 .p-float-label {
   margin-left: 0;
+}
+
+.p-button {
+  width: 100%;
+  margin: 20px 0;
 }
 </style>

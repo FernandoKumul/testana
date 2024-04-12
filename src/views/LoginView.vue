@@ -1,6 +1,6 @@
 <template>
 
-  <body>
+  <main>
     <img class="register_back" src="/src/assets/img/Register.png" alt="register_back">
 
     <div class="column_1">
@@ -13,20 +13,21 @@
         <div class="half-square">
           <h2>Iniciar Sesión</h2>
           <div class="container">
-            <form @submit.prevent="submitForm">
+            <form @submit.prevent="submitForm" autocomplete="">
               <FloatLabel>
-                <InputText id="email" v-model="dataLogin.email" :invalid="!validateEmail" />
+                <InputText type="email" id="email" name="email" v-model="dataLogin.email" :invalid="!validateEmail" />
                 <label for="email">Email</label>
               </FloatLabel>
-              <small v-if="!validateEmail" id="username-help">Ingresa un email valido.</small>
+              <small v-if="!validateEmail">Ingresa un email valido.</small>
 
               <FloatLabel class="FloatLabel">
-                <Password inputId="password" v-model="dataLogin.password" :feedback="false" toggleMask
+                <Password inputId="password" name="password" v-model="dataLogin.password" :feedback="false" toggleMask
                   strongRegex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,50}$" :invalid="!validatePassword" />
                 <label for="password">Contraseña</label>
               </FloatLabel>
-              <small v-if="!validateEmail" id="username-help">La contraseña es requerida.</small>
-              <Button type="submit" label="Iniciar" />
+              <small v-if="!validatePassword">La contraseña es requerida.</small>
+
+              <Button :loading="loading" type="submit" label="Iniciar"  />
             </form>
             <br>
             <RouterLink to="register">
@@ -37,7 +38,7 @@
       </div>
 
     </div>
-  </body>
+  </main>
   <Toast />
 </template>
 
@@ -59,6 +60,7 @@ const toast = useToast()
 const service = new UserService()
 
 const regexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+const loading = ref(false)
 const dataLogin = reactive<IUserLogin>({
   email: '',
   password: ''
@@ -95,25 +97,29 @@ const submitForm = async () => {
   if(!validatePassword.value || !validateEmail.value) return
   
   try {
+    loading.value = true
     await service.login({ ...dataLogin })
     router.push({ name: 'dashboard' })
   } catch (error) {
     if (error instanceof AxiosError) {
-      if(error.response?.status === 400) {
+      if(error.response?.data.message === 'Correo o contraseña incorrectos') {
         return toast.add({ severity: 'error', summary: 'Credenciales Invalidas', detail: 'Revisa tus credenciales', life: 6000 });  
       }
       
-      return toast.add({ severity: 'error', summary: 'Oops... Ocurrió un error', detail: 'Intentalo más tarde', life: 6000 });
+      return toast.add({ severity: 'error', summary: 'Oops... Ocurrió un error', detail: 'Intentelo más tarde', life: 6000 });
     }
+  } finally {
+    loading.value = false
   }
 }
 
 </script>
 
 <style scoped>
-body {
+main {
   display: flex;
   margin: 0;
+  min-height: 100vh;
 }
 
 img {
