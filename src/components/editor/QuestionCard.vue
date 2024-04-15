@@ -18,13 +18,13 @@
     <main>
       <div class="description">
         <span>{{ question.order }}.</span>
-        <InputText type="text" v-model="question.description" variant="filled" />
+        <InputText :invalid="question.description === '' && dirtyQuestion" type="text" v-model.trim="question.description" variant="filled" />
       </div>
       <template v-if="question.QuestionTypeId === 1">
         <div class="container-answers">
           <!-- Preguntas abiertas -->
           <div class="flex-align" v-for="answer in question.answers" :key="answer.temId">
-            <InputText class="remove-border" type="text" v-model="answer.text" />
+            <InputText class="remove-border" type="text" v-model.trim="answer.text" :invalid="answer.text === '' && dirtyQuestion" />
             <i class="pi pi-times" style="cursor: pointer;" @click="deleteAnswer(answer.temId)"></i>
           </div>
         </div>
@@ -38,7 +38,7 @@
         <!-- Preguntas multples -->
         <div class="flex-align" v-for="answer in question.answers" :key="answer.temId">
           <Checkbox v-model="answer.correct" :binary="true" />
-          <InputText class="remove-border" type="text" v-model="answer.text" />
+          <InputText class="remove-border" type="text" v-model.trim="answer.text" :invalid="answer.text === '' && dirtyQuestion" />
           <i class="pi pi-times" style="cursor: pointer;" @click="deleteAnswer(answer.temId)"></i>
         </div>
       </div>
@@ -65,7 +65,8 @@ const emits = defineEmits<{
 }>()
 
 const props = defineProps<{
-  total: number
+  total: number,
+  dirtyQuestion: boolean
 }>()
 
 const typesVisibility = [
