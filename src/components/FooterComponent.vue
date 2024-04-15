@@ -1,7 +1,9 @@
 <template>
   <div class="footer">
     <div class="column_1">
-      <img src="/src/assets/img/Logo.png" alt="logo" style="width: 50%;">
+      <router-link to="/">
+          <img src="/src/assets/img/Logo.png" alt="logo" style="width: 150px">
+        </router-link>
       <h1>estana</h1>
     </div>
 
