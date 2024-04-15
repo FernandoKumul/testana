@@ -128,6 +128,7 @@ const closeSession = () => {
     background-color: #FFDECC;
     display: flex;
     padding: 13px;
+    margin-bottom: 50px;
   }
 
   .p-inputtext{

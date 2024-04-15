@@ -103,11 +103,11 @@ img {
   margin-top: -37%;
   z-index: 1;
 }
+
 h1{
   display: flex;
   margin-left: 17rem;
   margin-top: -4rem;
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 4rem;
 }
 
@@ -173,6 +173,7 @@ button{
   align-items: center;
   justify-content: center;
   gap: 4rem;
+  margin-bottom: 250px;
 }
 
 .image-container-two div {
