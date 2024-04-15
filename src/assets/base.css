@@ -33,13 +33,12 @@ body {
   width: 100%;
 }
 
-.p-button {
-  --color: #FA8841;
+.p-button[class=btn-custom]{
   z-index: 1;
   position: relative;
 }
 
-.p-button::before {
+.p-button[class=btn-custom]::before {
   position: absolute;
   content: "";
   background: var(--color);
@@ -49,18 +48,18 @@ body {
   border-radius: 50%;
 }
 
-.p-button:hover {
+.p-button[class=btn-custom]:hover {
   background-color: #F7B16C;
   border-color: #F7B16C;
 }
 
-.p-button:before {
+.p-button[class=btn-custom]:before {
   top: 100%;
   left: 100%;
   transition: 0.3s all;
 }
 
-.p-button:hover::before {
+.p-button[class=btn-custom]:hover::before {
   top: -30px;
   left: -20%;
 }
