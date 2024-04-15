@@ -5,42 +5,42 @@ const message = () => {
 </script>
 
 <template>
-  <main>
-   
+  <main> 
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-  <rect x="0" y="0" width="1440" height="800" fill="#FFDECC" />
-</svg>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-  <path fill="#FFDECC" fill-opacity="1" d="M0,160L30,138.7C60,117,120,75,180,85.3C240,96,300,160,360,176C420,192,480,160,540,133.3C600,107,660,85,720,112C780,139,840,213,900,250.7C960,288,1020,288,1080,256C1140,224,1200,160,1260,122.7C1320,85,1380,75,1410,69.3L1440,64L1440,0L1410,0C1380,0,1320,0,1260,0C1200,0,1140,0,1080,0C1020,0,960,0,900,0C840,0,780,0,720,0C660,0,600,0,540,0C480,0,420,0,360,0C300,0,240,0,180,0C120,0,60,0,30,0L0,0Z"></path>
-</svg>
+      <rect x="0" y="0" width="1440" height="800" fill="#FFDECC" />
+    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+      <path fill="#FFDECC" fill-opacity="1" d="M0,160L30,138.7C60,117,120,75,180,85.3C240,96,300,160,360,176C420,192,480,160,540,133.3C600,107,660,85,720,112C780,139,840,213,900,250.7C960,288,1020,288,1080,256C1140,224,1200,160,1260,122.7C1320,85,1380,75,1410,69.3L1440,64L1440,0L1410,0C1380,0,1320,0,1260,0C1200,0,1140,0,1080,0C1020,0,960,0,900,0C840,0,780,0,720,0C660,0,600,0,540,0C480,0,420,0,360,0C300,0,240,0,180,0C120,0,60,0,30,0L0,0Z"></path>
+    </svg>
 
-<path fill="#FFDECC" fill-opacity="1" d="M0,160L30,138.7C60,117,120,75,180,85.3C240,96,300,160,360,176C420,192,480,160,540,133.3C600,107,660,85,720,112C780,139,840,213,900,250.7C960,288,1020,288,1080,256C1140,224,1200,160,1260,122.7C1320,85,1380,75,1410,69.3L1440,64L1440,0L1410,0C1380,0,1320,0,1260,0C1200,0,1140,0,1080,0C1020,0,960,0,900,0C840,0,780,0,720,0C660,0,600,0,540,0C480,0,420,0,360,0C300,0,240,0,180,0C120,0,60,0,30,0L0,0Z"></path>
+    <path fill="#FFDECC" fill-opacity="1" d="M0,160L30,138.7C60,117,120,75,180,85.3C240,96,300,160,360,176C420,192,480,160,540,133.3C600,107,660,85,720,112C780,139,840,213,900,250.7C960,288,1020,288,1080,256C1140,224,1200,160,1260,122.7C1320,85,1380,75,1410,69.3L1440,64L1440,0L1410,0C1380,0,1320,0,1260,0C1200,0,1140,0,1080,0C1020,0,960,0,900,0C840,0,780,0,720,0C660,0,600,0,540,0C480,0,420,0,360,0C300,0,240,0,180,0C120,0,60,0,30,0L0,0Z"></path>
 
 <div class="column_1">
       <img src="/src/assets/img/Logo.png" alt="logo">
-      <h1>esana</h1>
+      <h1>estana</h1>
     </div> 
     <div class="column_2">
       <h2>Bienvenido a la plataforma innovadora para la creación, realización y análisis de cuestionarios educativos. Puedes llevar tu experiencia de evaluación y aprendizaje al siguiente nivel de forma fácil, interactiva y eficiente. ¡Descubre todas las posibilidades que Testana tiene para ofrecerte y mejora tu práctica educativa hoy mismo!</h2>
+      <Button @click="message">Iniciar</Button>
+
     </div>
-    <Button @click="message">Iniciar</Button>
     <h2 class="title">En nuestro sitio web puedes...</h2>
     <div class="image-container">
-      <div>
+      <div class="img-do">
         <img src="/src/assets/img/Buscartest.jpg" alt="buscartest">
         <h3>Buscar Tests</h3>
       </div>
-      <div>
+      <div class="img-do">
         <img src="/src/assets/img/Creartest.jpg" alt="creartest">
         <h3>Crear Tests</h3>
       </div>
-      <div>
+      <div class="img-do">
         <img src="/src/assets/img/Comentar.jpg" alt="comentar">
         <h3>Comentar</h3>
       </div>
-      <div>
+      <div class="img-do">
         <img src="/src/assets/img/Reporte.jpg" alt="reporte">
-        <h3>Obtener un<br>reporte del Test</h3>
+        <h3>Obtener un reporte del Test</h3>
       </div>
     </div>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#7C0405" fill-opacity="1" d="M0,32L48,58.7C96,85,192,139,288,138.7C384,139,480,85,576,101.3C672,117,768,203,864,229.3C960,256,1056,224,1152,202.7C1248,181,1344,171,1392,165.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
@@ -90,8 +90,8 @@ main {
 img {
   width: 200px;
   display: flex;
-  
 }
+
 .column_1 {
   text-align: center;
   display: flex;
@@ -113,31 +113,61 @@ h1{
 
 .column_2 {
   width: 45%;
-  display: flex;
   z-index: 1;
   margin-right: 35%;
   margin-top: -15%;
 }
+
 button{
-  margin-right: 75%;
+  width: 39%;
   font-size: large;
   font-size: medium;
+  display: flex;
+  justify-content: center
 }
+
 .title{
   margin-top: 25%;
   font-size: 1.7rem;
 }
+
 .image-container {
   display: flex;
-  justify-content: space-between;
-  gap: 4rem;
+  justify-content: center;
   margin-top: 20px;
   text-align: center;
+  width: 100%;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
+  }
+
+  h3{
+    margin-top: 0px;
+  }
+
+.img-do{
+    transition: all 500ms;
+    margin: 0px 20px;
 }
-.image-container img {
-  width: auto;
-  height: 10rem;
+
+.img-do img:hover{
+    box-shadow: 2px 2px 10px #0000009b;
+    transform:scale(0.95);
+
 }
+
+.img-do img{
+  border-radius: 8px;
+  width: 13rem;
+  height: 13rem;
+  object-fit:cover;
+  box-shadow: 10px 10px 15px #0000004c;
+  margin-bottom: 10px;
+}
+
+
 .image-container-two {
   display: flex;
   align-items: center;
