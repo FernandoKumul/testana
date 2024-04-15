@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <Button @click="createTest">Crear</Button>
+    <Button @click="createTest" label="Crear Test" :loading="loadingCreate" />
   </nav>
   <main>
     <section>
@@ -8,29 +8,36 @@
         <div class="mb-12">
           <label for="title">Título</label>
           <InputText id="title" v-model="newTest.title" type="text" placeholder="Test sin título" />
-          <small>El título es obligatorio</small>
+          <!-- <small>El título es obligatorio</small> -->
         </div>
         <div>
           <label for="description">Descripción</label>
           <Textarea id="description" v-model="newTest.description" placeholder="Habla un poco sobre tu test" rows="3" />
-          <small>La descripción es obligatoria</small>
+          <!-- <small>La descripción es obligatoria</small> -->
         </div>
       </article>
 
       <div class="num-questions">
         <h3>{{ newTest.questions.length }} preguntas</h3>
-        <Button outlined>Nueva Pregunta</Button>
+        <Button icon="pi pi-plus" @click="AddQuestion" label="Nueva Pregunta" outlined />
+      </div>
+
+      <div class="container-questions">
+        <template v-for="(question, index) in sortOrderQuestions" :key="question.temId">
+          <QuestionCard class="card" v-model="sortOrderQuestions[index]" :total="newTest.questions.length" @down="downQuestion" @up="upQuestion" @delete="deleteQuestion" />
+        </template>
       </div>
     </section>
 
-    <aside class="card">
+    <aside class="card" style="height: fit-content;">
       <div class="container-image mb-12">
         <template v-if="newTest.image">
           <img class="image-test" :src="newTest.image" alt="image">
           <i class="pi pi-times icon-delete-image" @click="newTest.image = null" style="font-size: 1.5rem"></i>
         </template>
-        <i v-if="!loadingImage && !newTest.image" class="pi pi-cloud-upload icon-upload" @click="inputImage?.click()"></i>
-        
+        <i v-if="!loadingImage && !newTest.image" class="pi pi-cloud-upload icon-upload"
+          @click="inputImage?.click()"></i>
+
         <div v-if="loadingImage" class="load-image-icon-container">
           <i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
         </div>
@@ -66,7 +73,7 @@
       <div>
         <label for="tags">Etiquetas</label>
         <InputText id="tags" @keyup.enter="addTag" v-model="tagCurrent" type="text" placeholder="Escribe tu etiqueta" />
-        <div class="tags-container">
+        <div class="tags-container" >
           <Chip v-for="tag in tags" :label="tag.text" :key="tag.id" @remove="removeTag(tag.id)" removable />
         </div>
       </div>
@@ -75,8 +82,8 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, type Ref } from 'vue';
-import type { INewTest } from '@/interfaces/INewTest';
+import { computed, reactive, ref, type Ref } from 'vue';
+import type { INewQuestion, INewTest } from '@/interfaces/INewTest';
 import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
 import Dropdown from 'primevue/dropdown';
@@ -85,6 +92,10 @@ import InputSwitch from 'primevue/inputswitch';
 import Chip from 'primevue/chip';
 import UploadService from '@/services/UploadService';
 import { AxiosError } from 'axios';
+import QuestionCard from '@/components/editor/QuestionCard.vue';
+import TestService from '@/services/TestService';
+import { useToast } from 'primevue/usetoast';
+import router from '@/router';
 
 interface IColor {
   name: 'green' | 'blue' | 'purple' | 'orange' | 'yellow' | 'red';
@@ -111,11 +122,15 @@ const colors: IColor[] = [
   { name: 'red', color: '#EF4444' }
 ]
 
+const toast = useToast()
+
 const inputImage: Ref<HTMLInputElement | null> = ref(null);
 const tagCurrent = ref('')
 const tags = ref<ITagShow[]>([])
 const loadingImage = ref(false)
+const loadingCreate = ref(false)
 let tagIndex = 1
+let questionIdTemp = 1
 
 const addTag = () => {
   if (tagCurrent.value.trim() === "") return
@@ -149,12 +164,45 @@ const submitImage = async (event: Event) => {
     newTest.image = await UploadService.submitImage(formData)
   } catch (error) {
     if (error instanceof AxiosError) {
-      //
+      toast.add({ severity: 'error', summary: 'Oops... Ocurrió un error', detail: "La imagen no se pudo subir", life: 6000 });  
     }
   } finally {
     loadingImage.value = false
   }
 };
+
+const deleteQuestion = (temId: number) => {
+  const findIndex = newTest.questions.findIndex(item => item.temId == temId)
+
+  if (findIndex == -1) return
+
+  const orderDelete = newTest.questions[findIndex].order
+  newTest.questions.splice(findIndex, 1)
+
+  for (let question of newTest.questions) {
+    if (question.order > orderDelete) {
+      question.order--
+    }
+  }
+
+}
+
+const AddQuestion = () => {
+  const newQuestion: INewQuestion = {
+    answers: [],
+    description: '',
+    duration: null,
+    image: null,
+    order: newTest.questions.length + 1,
+    points: 0,
+    QuestionTypeId: 2,
+    temId: questionIdTemp
+  }
+
+  questionIdTemp++
+
+  newTest.questions.push(newQuestion)
+}
 
 const newTest = reactive<INewTest>({
   userId: 0,
@@ -171,7 +219,35 @@ const newTest = reactive<INewTest>({
   questions: []
 })
 
-const createTest = () => {
+const upQuestion = (temId: number) => {
+  const findIndex = newTest.questions.findIndex(item => item.temId == temId)
+  
+  if (findIndex == -1) return
+  
+  const findIndexOther = newTest.questions.findIndex(item => item.order == newTest.questions[findIndex].order - 1)
+
+  if(findIndexOther == -1) return
+
+  newTest.questions[findIndex].order--
+  newTest.questions[findIndexOther].order++
+  
+}
+
+const downQuestion = (temId: number) => {
+  const findIndex = newTest.questions.findIndex(item => item.temId == temId)
+  
+  if (findIndex == -1) return
+  
+  const findIndexOther = newTest.questions.findIndex(item => item.order == newTest.questions[findIndex].order + 1)
+
+  if(findIndexOther == -1) return
+
+  newTest.questions[findIndex].order++
+  newTest.questions[findIndexOther].order--
+  
+}
+
+const createTest = async () => {
   newTest.tags = ''
   for (let item of tags.value) {
     newTest.tags += item.text + ','
@@ -183,7 +259,35 @@ const createTest = () => {
 
   console.log(newTest)
   //Subir
+
+  try {
+    loadingCreate.value = true
+    const testId = await TestService.create({...newTest})
+    toast.add({ severity: 'success', summary: 'Test creado', life: 4000 });  
+    router.push({name: 'edit_test', params: {id: testId}})
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if(error.response?.status === 401) {
+        toast.add({ severity: 'error', summary: 'Credenciales Invalidas', detail: "Inicia sesión nuevamente", life: 6000 });  
+        return router.push({name: 'login'})
+      }
+
+      if(error.response?.status === 400) {
+        return toast.add({ severity: 'error', summary: 'Test Invalido', detail: error.response?.data.message ?? "Ocurrio un error", life: 6000 });  
+      }
+
+      toast.add({ severity: 'error', summary: 'Oops... Ocurrió un error', detail: "Intentelo más tarde", life: 6000 });  
+    }
+  } finally {
+    loadingCreate.value = false
+  }
 }
+
+const sortOrderQuestions = computed(() => {
+  return [...newTest.questions].sort((a, b) => {
+    return a.order - b.order;
+  });
+})
 </script>
 
 <style scoped>
@@ -259,6 +363,7 @@ main {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  margin-top: 6px;
 }
 
 .mb-12 {
@@ -313,5 +418,11 @@ label {
   color: #f87171;
   background-color: rgba(87, 86, 99, 0.4);
   border-radius: 999px;
+}
+
+.container-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 </style>

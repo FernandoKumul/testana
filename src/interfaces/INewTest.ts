@@ -14,6 +14,7 @@ export interface INewTest {
 }
 
 export interface INewQuestion {
+  temId: number
   QuestionTypeId: number
   description: string
   image: string | null
@@ -25,6 +26,7 @@ export interface INewQuestion {
 }
 
 export interface INewAnswer {
+  temId: number
   text: string
   correct: boolean
 }
