@@ -14,6 +14,8 @@
 
 
 <script lang="ts" setup>
+import Carousel from 'primevue/carousel';
+
 
 </script>
   
