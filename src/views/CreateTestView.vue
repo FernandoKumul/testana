@@ -24,6 +24,18 @@
     </section>
 
     <aside class="card">
+      <div class="container-image mb-12">
+        <template v-if="newTest.image">
+          <img class="image-test" :src="newTest.image" alt="image">
+          <i class="pi pi-times icon-delete-image" @click="newTest.image = null" style="font-size: 1.5rem"></i>
+        </template>
+        <i v-if="!loadingImage && !newTest.image" class="pi pi-cloud-upload icon-upload" @click="inputImage?.click()"></i>
+        
+        <div v-if="loadingImage" class="load-image-icon-container">
+          <i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
+        </div>
+        <input type="file" ref="inputImage" style="display: none;" accept="image/*" @change="submitImage">
+      </div>
       <div class="mb-12">
         <label for="visibility">Visiblidad</label>
         <Dropdown inputId="visibility" v-model="newTest.visibility" optionValue="value" :options="typesVisibility"
@@ -47,22 +59,23 @@
         <span>Colores</span>
         <div class="colors-container">
           <span v-for="(color, index) in colors" class="circle-color" @click="newTest.color = color.name" :key="index"
-            :style="{ 'background-color': color.color }" :class="{'select-color': color.name == newTest.color}"></span>
+            :style="{ 'background-color': color.color }"
+            :class="{ 'select-color': color.name == newTest.color }"></span>
         </div>
       </div>
       <div>
-          <label for="tags">Etiquetas</label>
-          <InputText id="tags" @keyup.enter="addTag" v-model="tagCurrent" type="text" placeholder="Escribe tu etiqueta" />
-          <div class="tags-container">
-            <Chip v-for="tag in tags" :label="tag.text" :key="tag.id" @remove="removeTag(tag.id)" removable/>
-          </div>
+        <label for="tags">Etiquetas</label>
+        <InputText id="tags" @keyup.enter="addTag" v-model="tagCurrent" type="text" placeholder="Escribe tu etiqueta" />
+        <div class="tags-container">
+          <Chip v-for="tag in tags" :label="tag.text" :key="tag.id" @remove="removeTag(tag.id)" removable />
         </div>
+      </div>
     </aside>
   </main>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue';
+import { reactive, ref, type Ref } from 'vue';
 import type { INewTest } from '@/interfaces/INewTest';
 import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
@@ -70,6 +83,8 @@ import Dropdown from 'primevue/dropdown';
 import InputNumber from 'primevue/inputnumber';
 import InputSwitch from 'primevue/inputswitch';
 import Chip from 'primevue/chip';
+import UploadService from '@/services/UploadService';
+import { AxiosError } from 'axios';
 
 interface IColor {
   name: 'green' | 'blue' | 'purple' | 'orange' | 'yellow' | 'red';
@@ -96,14 +111,16 @@ const colors: IColor[] = [
   { name: 'red', color: '#EF4444' }
 ]
 
+const inputImage: Ref<HTMLInputElement | null> = ref(null);
 const tagCurrent = ref('')
 const tags = ref<ITagShow[]>([])
+const loadingImage = ref(false)
 let tagIndex = 1
 
 const addTag = () => {
-  if(tagCurrent.value.trim() === "") return
+  if (tagCurrent.value.trim() === "") return
 
-  tags.value.push({id: tagIndex, text: tagCurrent.value.trim()})
+  tags.value.push({ id: tagIndex, text: tagCurrent.value.trim() })
   tagIndex++
   console.log(tags.value)
   tagCurrent.value = ''
@@ -113,6 +130,31 @@ const removeTag = (id: number) => {
   const findIndex = tags.value.findIndex(item => item.id == id)
   tags.value.splice(findIndex, 1)
 }
+
+const submitImage = async (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const files = target.files;
+
+  if (!files || files.length === 0) {
+    //Mostrar toast
+    console.error('No se seleccionó ningún archivo.');
+    return
+  }
+  try {
+    const file = files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    loadingImage.value = true
+    newTest.image = await UploadService.submitImage(formData)
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      //
+    }
+  } finally {
+    loadingImage.value = false
+  }
+};
 
 const newTest = reactive<INewTest>({
   userId: 0,
@@ -131,11 +173,11 @@ const newTest = reactive<INewTest>({
 
 const createTest = () => {
   newTest.tags = ''
-  for(let item of tags.value) {
+  for (let item of tags.value) {
     newTest.tags += item.text + ','
   }
 
-  if(tags.value.length > 0) {
+  if (tags.value.length > 0) {
     newTest.tags = newTest.tags.slice(0, newTest.tags.length - 1)
   }
 
@@ -217,7 +259,6 @@ main {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin: 12px 0;
 }
 
 .mb-12 {
@@ -227,5 +268,50 @@ main {
 label {
   margin-bottom: 4px;
   display: block;
+}
+
+.container-image {
+  border: #cbd5e1 1px solid;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+  position: relative;
+}
+
+.icon-upload {
+  font-size: 80px;
+  color: #575663;
+  cursor: pointer;
+  padding: 26px;
+}
+
+.image-test {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.load-image-icon-container {
+  color: #575663;
+  /* background-color: rgba(54, 54, 54, 0.3); */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-delete-image {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 6px;
+  cursor: pointer;
+  color: #f87171;
+  background-color: rgba(87, 86, 99, 0.4);
+  border-radius: 999px;
 }
 </style>

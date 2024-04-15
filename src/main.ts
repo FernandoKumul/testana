@@ -11,7 +11,7 @@ import './assets/theme/aura-light/theme.css'
 import ToastService from 'primevue/toastservice';
 import Button from 'primevue/button';
 import Divider from 'primevue/divider';
-
+import 'primeicons/primeicons.css'
 
 const app = createApp(App)
 app.use(PrimeVue);
