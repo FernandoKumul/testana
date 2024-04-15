@@ -19,4 +19,19 @@ export default class TestService {
       throw error
     }
   }
+
+  static async GetById(testId: number) {
+    try {
+      const token = localStorage.getItem('token')
+      const response = await axios.get(`${BASE_URL}/test/questions-answers/${testId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      return response.data.data
+    } catch (error) {
+      console.error('Error al crear el test:', error);
+      throw error
+    }
+  }
 }

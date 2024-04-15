@@ -13,8 +13,12 @@ export interface INewTest {
   questions: INewQuestion[]
 }
 
+//Agregar colaboradores, id, dislikes, likes
+
 export interface INewQuestion {
+  id?: number
   temId: number
+  testId?: number | null
   QuestionTypeId: number
   description: string
   image: string | null
@@ -26,6 +30,8 @@ export interface INewQuestion {
 }
 
 export interface INewAnswer {
+  id?: number
+  questionId?: number
   temId: number
   text: string
   correct: boolean
