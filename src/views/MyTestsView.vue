@@ -12,10 +12,9 @@ import { ref } from "vue";
 import TabMenu from 'primevue/tabmenu';
 
 const items = ref([
-    { label: 'Dashboard', icon: 'pi pi-home' },
-    { label: 'Transactions', icon: 'pi pi-chart-line' },
-    { label: 'Products', icon: 'pi pi-list' },
-    { label: 'Messages', icon: 'pi pi-inbox' }
+    { label: 'Hechos', icon: 'pi pi-home' },
+    { label: 'Creados', icon: 'pi pi-chart-line' },
+    { label: 'Colaborando', icon: 'pi pi-list' },
 ]);
 </script>
   
