@@ -43,6 +43,7 @@
 </template>
   
 <script lang="ts" setup>
+import ConfirmDialog from 'primevue/confirmdialog';
 import InputText from 'primevue/inputtext';
 import IconField from 'primevue/iconfield';
 import { useConfirm } from "primevue/useconfirm";
@@ -51,7 +52,7 @@ import Button from 'primevue/button';
 import Toolbar from 'primevue/toolbar';
 import 'primeicons/primeicons.css'
 import { ref } from 'vue';
-import ConfirmDialog from 'primevue/confirmdialog';
+import router from '@/router';
 
 const confirm = useConfirm();
 
@@ -63,8 +64,11 @@ const items = ref([
       label:'Opciones',
         items: [
             {
-                label: 'Perfil',
-                icon: 'pi pi-user',
+              label: 'Perfil',
+              icon: 'pi pi-user',
+              command: () => {
+                router.push('/my_tests');
+              }
             },
             {
                 label: 'Cerrar Sesión',
