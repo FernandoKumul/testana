@@ -60,8 +60,9 @@ const router = createRouter({
     },
     // 8
     {
-      path: '/test/:id',
-      name: 'test',
+      // path: '/test/:id',
+      path: '/view-test',
+      name: 'view-test',
       component: TestView
     },
     // 9
