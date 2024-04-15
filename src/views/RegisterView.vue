@@ -54,7 +54,7 @@
               </FloatLabel>
               <small v-if="!validateConfirmPassword">La contraseñas no coinciden.</small>
 
-              <Button :loading="loading" type="submit" label="Iniciar" />
+              <Button data-btn="custom" :loading="loading" type="submit" label="Iniciar" />
             </form>
             <br />
             <RouterLink to="login"> ¿Ya tienes una cuenta? Inicia sesión </RouterLink>
