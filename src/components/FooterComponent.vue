@@ -8,7 +8,7 @@
     <div class="column_2">
       <h2>Contenido:</h2>
       <RouterLink to="/login">Iniciar sesión</RouterLink>
-      <RouterLink to="/terminos_condiciones'">Términos y condiciones</RouterLink>
+      <RouterLink to="/terminos_condiciones">Términos y condiciones</RouterLink>
       <RouterLink to="/faq">Preguntas Frecuentes</RouterLink>
       <RouterLink to="/aviso_privacidad">Aviso de privacidad</RouterLink>
     </div>
