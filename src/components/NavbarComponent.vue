@@ -1,4 +1,5 @@
 <template>
+  <ConfirmDialog></ConfirmDialog>
   <Toolbar>
     <template #start>
       <div class="logo">
@@ -44,11 +45,15 @@
 <script lang="ts" setup>
 import InputText from 'primevue/inputtext';
 import IconField from 'primevue/iconfield';
+import { useConfirm } from "primevue/useconfirm";
 import Menu from 'primevue/menu';
 import Button from 'primevue/button';
 import Toolbar from 'primevue/toolbar';
 import 'primeicons/primeicons.css'
 import { ref } from 'vue';
+import ConfirmDialog from 'primevue/confirmdialog';
+
+const confirm = useConfirm();
 
 const search = ref('');
 
@@ -63,16 +68,32 @@ const items = ref([
             },
             {
                 label: 'Cerrar Sesión',
-                icon: 'pi pi-sign-out'
+                icon: 'pi pi-sign-out',
+                command: () => {
+                  closeSession()
+                }
             }
         ]
     }
 ]);
 
-const toggle = (event) => {
+const toggle = (event: Event) => {
     menu.value.toggle(event);
 };
 
+const closeSession = () => {
+    confirm.require({
+        message: '¿Estás seguro de cerrar tu sesión?',
+        header: 'Cerrar sesión',
+        icon: 'pi pi-exclamation-triangle',
+        rejectClass: 'p-button-secondary p-button-outlined',
+        rejectLabel: 'Cancelar',
+        acceptLabel: 'Aceptar',
+        accept: () => {
+          localStorage.removeItem('token')
+        }
+    });
+};
 
 </script>
   
