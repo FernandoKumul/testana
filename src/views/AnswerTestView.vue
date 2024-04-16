@@ -2,47 +2,35 @@
   <div class="back">
     <br>
   </div>
-    <div class="all">
+    <div class="all" v-if="testForReply">
       <div class="timer">
-        <Button icon="pi pi-clock" severity="secondary" rounded aria-label="Time" label="Tiempo" />
+        <!-- <Button icon="pi pi-clock" severity="secondary" rounded aria-label="Time" label="Tiempo" /> -->
       </div>
 
       <div class="container">
 
         <div class="num-question">
-          <h1>Pregunta # de #</h1>
+          <h1>Pregunta {{ currentCuestion + 1 }} de {{ testForReply.questions.length }}</h1>
         </div>
 
         <div class="question">
-          <h2>¿Σ(っ °Д °;)っ?</h2>
+          <h2>{{ testForReply.questions[currentCuestion].description }}</h2>
         </div>
 
-        <div class="options">
-          <div class="option">
-            <button>(●ˇ∀ˇ●)</button>
-
+        <section class="options" v-if="testForReply.questions[currentCuestion].questionTypeId == 2">
+          <div class="option" v-for="option in testForReply.questions[currentCuestion].answers" :key="option.id">
+            <button>{{ option.text }}</button>
           </div>
-          <div class="option">
-            <button>(●ˇ∀ˇ●)</button>
+        </section>
 
-          </div>
-          <div class="option">
-            <button>(●ˇ∀ˇ●)</button>
-
-          </div>
-          <div class="option">
-            <button>(●ˇ∀ˇ●)</button>
-
-          </div>
-
-        </div>
+        <section class="options" v-if="testForReply.questions[currentCuestion].questionTypeId == 1">
+          <InputText placeholder="Escribe tu respuesta aquí" />
+        </section>
 
         <div class="button-continue">
-          <router-link to="/" rel="noopener">
-            <Button class="btn-custom" 
-                    data-btn="custom" label="Continuar" 
-                    severity="secondary"/>
-          </router-link>
+          <Button
+            label="Continuar" 
+            @click="nextQuestion()" />
 
         </div>
       </div>
@@ -54,6 +42,7 @@ import type { ITestReplyOne } from '@/interfaces/ITestReplyOne';
 import TestService from '@/services/TestService';
 import { AxiosError } from 'axios';
 import Button from 'primevue/button';
+import InputText from 'primevue/inputtext';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -61,6 +50,16 @@ import { useRoute } from 'vue-router';
 const route = useRoute()
 const toast = useToast()
 const testForReply = ref<ITestReplyOne | null>(null)
+const currentCuestion = ref(0)
+// const answersUser = ref([])
+
+const nextQuestion = () => {
+  if(currentCuestion.value + 1 >= testForReply.value?.questions.length!) {
+    //Terminar el test
+    return
+  }
+  currentCuestion.value++
+}
 
 onMounted(async() => {
   try {
@@ -86,9 +85,13 @@ onMounted(async() => {
 
 <style scoped>
 
+button {
+  font-family: 'Nunito';
+}
+
 .button-continue button{
-  background-color: #F7B16C;
-  color: black;
+  /* background-color: #F7B16C; */
+  color: #1b1b1b;
   width: 100%;
   margin-top: 30px;
   padding: 10px 40px;
@@ -127,6 +130,8 @@ onMounted(async() => {
   border-radius: 4px;
   padding: 15px 5px;
   margin: 10px 10px 0px 0px;
+  cursor: pointer;
+  font-size: 18px;
 }
 
 .container{
@@ -155,6 +160,7 @@ h2{
   margin-top: 10%;
   z-index: 2;
   position: relative;
+  min-width: 200px;
 }
 
 .question{
@@ -189,8 +195,13 @@ h2{
 
 }
 
+.options input{
+  width: 50%;
+  margin-top: 18px;
+}
+
 .all{
-  margin: 5% 20% 0% 20%;
+  padding: 2% 20% 0% 20%;
   z-index: 2;
   position: relative;
   display: flex;
