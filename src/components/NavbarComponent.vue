@@ -119,16 +119,10 @@ const closeSession = () => {
   margin: 0px 7px;
 }
 
-.p-button:hover {
-  background-color: #7c040400;
-  border-color: transparent;
-}
-
 .p-toolbar{
     background-color: #FFDECC;
     display: flex;
     padding: 13px;
-    margin-bottom: 50px;
   }
 
   .p-inputtext{

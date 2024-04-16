@@ -27,7 +27,7 @@
               </FloatLabel>
               <small v-if="!validatePassword">La contraseña es requerida.</small>
 
-              <Button :loading="loading" type="submit" label="Iniciar"  />
+              <Button class="btn-custom" data-btn="custom" :loading="loading" type="submit" label="Iniciar"  />
             </form>
             <br>
             <RouterLink to="register">
@@ -118,7 +118,7 @@ const submitForm = async () => {
 <style scoped>
 main {
   display: flex;
-  margin: 0;
+  margin-top: 50px;
   min-height: 100vh;
 }
 
