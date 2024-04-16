@@ -100,3 +100,6 @@ const router = createRouter({
 })
 
 export default router
+// Guards: Login, register si no estas iniciado te manda aca
+// Guards: create test, mytest, edit test mandar a login si no estas logeado
+// en el guard llamar al servicio que te da el usuario con el token, si no regresa al usuario mandar a login y borrar el token
