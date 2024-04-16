@@ -1,90 +1,106 @@
 <template>
-  <nav>
-    <i class="pi pi-arrow-left icon-back" @click="router.go(-1)" ></i>
+  <i class="pi pi-spin pi-spinner loader" v-if="loadingData"></i>
+  <template v-else>
+    <h2 class="center-abs" v-if="dataNotFound">Test no encontado</h2>
+    <template v-else>
+      <nav>
+        <i class="pi pi-arrow-left icon-back" @click="router.go(-1)"></i>
 
-    <Button @click="createTest" label="Crear Test" :loading="loadingCreate" />
-  </nav>
-  <main>
-    <section>
-      <article class="card">
-        <div class="mb-12">
-          <label for="title">Título</label>
-          <InputText id="title" :invalid="errorTitle" v-model.trim="newTest.title" type="text" placeholder="Test sin título" />
+        <div class="buttons">
+          <Button @click="editTest()" :disabled="loadingChangeStatus" icon="pi pi-save" label="Guardar"
+            :loading="loadingSave" />
+          <Button @click="editTest(!newTest.status)" :disabled="loadingSave" class="btn-color"
+            :label="newTest.status ? 'Ocultar' : 'Publicar'"
+            :icon="newTest.status ? 'pi pi-eye-slash' : 'pi pi-cloud-upload'" :loading="loadingChangeStatus" />
         </div>
-        <div>
-          <label for="description">Descripción</label>
-          <Textarea id="description" :invalid="errorDescription" v-model.trim="newTest.description" placeholder="Habla un poco sobre tu test" rows="3" />
-        </div>
-      </article>
+      </nav>
+      <main>
+        <section>
+          <article class="card">
+            <div class="mb-12">
+              <label for="title">Título</label>
+              <InputText id="title" :invalid="errorTitle" v-model.trim="newTest.title" type="text"
+                placeholder="Test sin título" />
+            </div>
+            <div>
+              <label for="description">Descripción</label>
+              <Textarea id="description" :invalid="errorDescription" v-model.trim="newTest.description"
+                placeholder="Habla un poco sobre tu test" rows="3" />
+            </div>
+          </article>
 
-      <div class="num-questions">
-        <h3>{{ newTest.questions.length }} preguntas</h3>
-        <Button icon="pi pi-plus" @click="AddQuestion" label="Nueva Pregunta" outlined />
-      </div>
+          <div class="num-questions">
+            <h3>{{ newTest.questions.length }} preguntas</h3>
+            <Button icon="pi pi-plus" @click="AddQuestion" label="Nueva Pregunta" outlined />
+          </div>
 
-      <div class="container-questions">
-        <template v-for="(question, index) in sortOrderQuestions" :key="question.temId">
-          <QuestionCard class="card" v-model="sortOrderQuestions[index]" :total="newTest.questions.length" :dirty-question="dirtyQuestions[''+question.temId]"
-          @down="downQuestion" @up="upQuestion" @delete="deleteQuestion" />
-        </template>
-      </div>
-    </section>
+          <div class="container-questions">
+            <template v-for="(question, index) in sortOrderQuestions" :key="question.temId">
+              <QuestionCard class="card" v-model="sortOrderQuestions[index]" :total="newTest.questions.length"
+                :dirty-question="dirtyQuestions['' + question.temId]" @down="downQuestion" @up="upQuestion"
+                @delete="deleteQuestion" />
+            </template>
+          </div>
+        </section>
 
-    <aside class="card" style="height: fit-content;">
-      <div class="container-image mb-12">
-        <template v-if="newTest.image">
-          <img class="image-test" :src="newTest.image" alt="image">
-          <i class="pi pi-times icon-delete-image" @click="newTest.image = null" style="font-size: 1.5rem"></i>
-        </template>
-        <i v-if="!loadingImage && !newTest.image" class="pi pi-cloud-upload icon-upload"
-          @click="inputImage?.click()"></i>
+        <aside class="card" style="height: fit-content;">
+          <div class="container-image mb-12">
+            <template v-if="newTest.image">
+              <img class="image-test" :src="newTest.image" alt="image">
+              <i class="pi pi-times icon-delete-image" @click="newTest.image = null" style="font-size: 1.5rem"></i>
+            </template>
+            <i v-if="!loadingImage && !newTest.image" class="pi pi-cloud-upload icon-upload"
+              @click="inputImage?.click()"></i>
 
-        <div v-if="loadingImage" class="load-image-icon-container">
-          <i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
-        </div>
-        <input type="file" ref="inputImage" style="display: none;" accept="image/*" @change="submitImage">
-      </div>
-      <div class="mb-12">
-        <label for="visibility">Visiblidad</label>
-        <Dropdown inputId="visibility" v-model="newTest.visibility" optionValue="value" :options="typesVisibility"
-          optionLabel="name" placeholder="Visibilidad" />
-      </div>
-      <div>
-        <label for="duration">Duración (seg)</label>
-        <InputNumber v-model="newTest.duration" placeholder="Sin tiempo" locale="en-US" inputId="duration" :min="0"
-          :max="7200" />
-      </div>
+            <div v-if="loadingImage" class="load-image-icon-container">
+              <i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
+            </div>
+            <input type="file" ref="inputImage" style="display: none;" accept="image/*" @change="submitImage">
+          </div>
+          <div class="mb-12">
+            <label for="visibility">Visiblidad</label>
+            <Dropdown inputId="visibility" v-model="newTest.visibility" optionValue="value" :options="typesVisibility"
+              optionLabel="name" placeholder="Visibilidad" />
+          </div>
+          <div>
+            <label for="duration">Duración (seg)</label>
+            <InputNumber v-model="newTest.duration" placeholder="Sin tiempo" locale="en-US" inputId="duration" :min="0"
+              :max="7200" />
+          </div>
 
-      <div class="swith-container">
-        <InputSwitch v-model="newTest.evaluateByQuestion" />
-        <span>Calificar por pregunta</span>
-      </div>
-      <div class="swith-container">
-        <InputSwitch v-model="newTest.random" />
-        <span>Preguntas aleatorias</span>
-      </div>
-      <div>
-        <span>Colores</span>
-        <div class="colors-container">
-          <span v-for="(color, index) in colors" class="circle-color" @click="newTest.color = color.name" :key="index"
-            :style="{ 'background-color': color.color }"
-            :class="{ 'select-color': color.name == newTest.color }"></span>
-        </div>
-      </div>
-      <div>
-        <label for="tags">Etiquetas</label>
-        <InputText id="tags" @keyup.enter="addTag" v-model="tagCurrent" type="text" placeholder="Escribe tu etiqueta" />
-        <div class="tags-container" >
-          <Chip v-for="tag in tags" :label="tag.text" :key="tag.id" @remove="removeTag(tag.id)" removable />
-        </div>
-      </div>
-    </aside>
-  </main>
+          <div class="swith-container">
+            <InputSwitch v-model="newTest.evaluateByQuestion" />
+            <span>Calificar por pregunta</span>
+          </div>
+          <div class="swith-container">
+            <InputSwitch v-model="newTest.random" />
+            <span>Preguntas aleatorias</span>
+          </div>
+          <div>
+            <span>Colores</span>
+            <div class="colors-container">
+              <span v-for="(color, index) in colors" class="circle-color" @click="newTest.color = color.name"
+                :key="index" :style="{ 'background-color': color.color }"
+                :class="{ 'select-color': color.name == newTest.color }"></span>
+            </div>
+          </div>
+          <div>
+            <label for="tags">Etiquetas</label>
+            <InputText id="tags" @keyup.enter="addTag" v-model="tagCurrent" type="text"
+              placeholder="Escribe tu etiqueta" />
+            <div class="tags-container">
+              <Chip v-for="tag in tags" :label="tag.text" :key="tag.id" @remove="removeTag(tag.id)" removable />
+            </div>
+          </div>
+        </aside>
+      </main>
+    </template>
+  </template>
 </template>
 
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, type Ref } from 'vue';
-import type { INewQuestion, INewTest } from '@/interfaces/INewTest';
+import type { INewQuestion } from '@/interfaces/INewTest';
 import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
 import Dropdown from 'primevue/dropdown';
@@ -98,6 +114,7 @@ import TestService from '@/services/TestService';
 import { useToast } from 'primevue/usetoast';
 import router from '@/router';
 import { useRoute } from 'vue-router';
+import type { IUpdateTest } from '@/interfaces/IUpdateTest';
 
 const route = useRoute()
 
@@ -135,15 +152,21 @@ const toast = useToast()
 const inputImage: Ref<HTMLInputElement | null> = ref(null);
 const tagCurrent = ref('')
 const tags = ref<ITagShow[]>([])
+
 const loadingImage = ref(false)
-const loadingCreate = ref(false)
+const loadingSave = ref(false)
+const loadingChangeStatus = ref(false)
+const loadingData = ref(true)
+const dataNotFound = ref(false)
+
 const dirtyForm = ref(false)
 
 let tagIndex = 1
 let questionIdTemp = 1
 
 
-const newTest = reactive<INewTest>({
+const newTest = reactive<IUpdateTest>({
+  id: 0,
   userId: 0,
   title: '',
   description: '',
@@ -155,7 +178,9 @@ const newTest = reactive<INewTest>({
   duration: null,
   evaluateByQuestion: true,
   tags: '',
-  questions: []
+  questions: [],
+  dislikes: 0,
+  likes: 0,
 })
 
 const dirtyQuestions = reactive<IQuestionError>({})
@@ -192,7 +217,7 @@ const submitImage = async (event: Event) => {
     newTest.image = await UploadService.submitImage(formData)
   } catch (error) {
     if (error instanceof AxiosError) {
-      toast.add({ severity: 'error', summary: 'Oops... Ocurrió un error', detail: "La imagen no se pudo subir", life: 6000 });  
+      toast.add({ severity: 'error', summary: 'Oops... Ocurrió un error', detail: "La imagen no se pudo subir", life: 6000 });
     }
   } finally {
     loadingImage.value = false
@@ -224,7 +249,7 @@ const AddQuestion = () => {
     image: null,
     order: newTest.questions.length + 1,
     points: 0,
-    QuestionTypeId: 2,
+    questionTypeId: 2,
     temId: questionIdTemp
   }
 
@@ -236,65 +261,65 @@ const AddQuestion = () => {
 
 const upQuestion = (temId: number) => {
   const findIndex = newTest.questions.findIndex(item => item.temId == temId)
-  
+
   if (findIndex == -1) return
-  
+
   const findIndexOther = newTest.questions.findIndex(item => item.order == newTest.questions[findIndex].order - 1)
 
-  if(findIndexOther == -1) return
+  if (findIndexOther == -1) return
 
   newTest.questions[findIndex].order--
   newTest.questions[findIndexOther].order++
-  
+
 }
 
 const downQuestion = (temId: number) => {
   const findIndex = newTest.questions.findIndex(item => item.temId == temId)
-  
+
   if (findIndex == -1) return
-  
+
   const findIndexOther = newTest.questions.findIndex(item => item.order == newTest.questions[findIndex].order + 1)
 
-  if(findIndexOther == -1) return
+  if (findIndexOther == -1) return
 
   newTest.questions[findIndex].order++
   newTest.questions[findIndexOther].order--
-  
+
 }
 
 const validateAllQuestionsAnswers = () => {
-  for(let question of newTest.questions) {
-    
-    if(question.description === '') {
-      toast.add({ severity: 'warn', summary: 'Pregunta vacia', detail: `La pregunta ${question.order} está vacia`, life: 6000 });  
+  for (let question of newTest.questions) {
+
+    if (question.description === '') {
+      toast.add({ severity: 'warn', summary: 'Pregunta vacia', detail: `La pregunta ${question.order} está vacia`, life: 6000 });
       return false
     }
-    
+
     let correctAnswer = 0
-    for(let answer of question.answers) {
-      if(answer.text === '') {
-        toast.add({ severity: 'warn', summary: 'Respuesta vacia', detail: `Una respuesta de la pregunta ${question.order} está vacia`, life: 6000 });  
+    for (let answer of question.answers) {
+      if (answer.text === '') {
+        toast.add({ severity: 'warn', summary: 'Respuesta vacia', detail: `Una respuesta de la pregunta ${question.order} está vacia`, life: 6000 });
         return false
       }
-
+      console.log(answer.correct)
       if (answer.correct) correctAnswer++
     }
 
     if (correctAnswer === 0) {
-      toast.add({ severity: 'warn', summary: 'Sin respuesta correcta', detail: `La pregunta ${question.order} no tiene respuesta correcta`, life: 6000 });  
+      toast.add({ severity: 'warn', summary: 'Sin respuesta correcta', detail: `La pregunta ${question.order} no tiene respuesta correcta`, life: 6000 });
       return false
     }
   }
   return true
 }
 
-const createTest = async () => {
+const editTest = async (post?: boolean) => {
   dirtyForm.value = true
-  for(let key in dirtyQuestions) {
+  for (let key in dirtyQuestions) {
     dirtyQuestions[key] = true
   }
 
-  if(errorTitle.value || errorDescription.value || !validateAllQuestionsAnswers()) return
+  if (errorTitle.value || errorDescription.value || !validateAllQuestionsAnswers()) return
 
   newTest.tags = ''
   for (let item of tags.value) {
@@ -306,28 +331,37 @@ const createTest = async () => {
   }
 
   console.log(newTest)
-  //Subir
 
   try {
-    loadingCreate.value = true
-    const testId = await TestService.create({...newTest})
-    toast.add({ severity: 'success', summary: 'Test creado', life: 4000 });  
-    router.push({name: 'edit_test', params: {id: testId}})
+    const copyTest = { ...newTest }
+    if (post !== undefined) {
+      copyTest.status = post
+      loadingChangeStatus.value = true
+    } else {
+      loadingSave.value = true
+    }
+
+    await TestService.update(copyTest)
+    toast.add({ severity: 'success', summary: 'Test actualizado', life: 4000 });
+    if (post !== undefined) {
+      newTest.status = post
+    }
   } catch (error) {
     if (error instanceof AxiosError) {
-      if(error.response?.status === 401) {
-        toast.add({ severity: 'error', summary: 'Credenciales Invalidas', detail: "Inicia sesión nuevamente", life: 6000 });  
-        return router.push({name: 'login'})
+      if (error.response?.status === 401) {
+        toast.add({ severity: 'error', summary: 'Credenciales Invalidas', detail: "Inicia sesión nuevamente", life: 6000 });
+        return router.push({ name: 'login' })
       }
 
-      if(error.response?.status === 400) {
-        return toast.add({ severity: 'error', summary: 'Test Invalido', detail: error.response?.data.message ?? "Ocurrio un error", life: 6000 });  
+      if (error.response?.status === 400) {
+        return toast.add({ severity: 'error', summary: 'Test Invalido', detail: error.response?.data.message ?? "Ocurrio un error", life: 6000 });
       }
 
-      toast.add({ severity: 'error', summary: 'Oops... Ocurrió un error', detail: "Intentelo más tarde", life: 6000 });  
+      toast.add({ severity: 'error', summary: 'Oops... Ocurrió un error', detail: "Intentelo más tarde", life: 6000 });
     }
   } finally {
-    loadingCreate.value = false
+    loadingSave.value = false
+    loadingChangeStatus.value = false
   }
 }
 
@@ -359,10 +393,41 @@ const errorDescription = computed(() => {
 
 onMounted(async () => {
   try {
-    const data = await TestService.GetById(parseInt(route.params.id as string))
-    console.log(data)
+    const data: IUpdateTest = await TestService.GetById(parseInt(route.params.id as string))
+    const tagsSplit = data.tags.split(',')
+    for (let item of tagsSplit) {
+      tags.value.push({ id: tagIndex, text: item })
+      tagIndex++
+    }
+
+    for (let question of data.questions) {
+      question.temId = question.id!
+      questionIdTemp = question.temId + 1
+      dirtyQuestions['' + question.temId] = false
+    }
+
+    Object.assign(newTest, data)
+    console.log(newTest)
   } catch (error) {
-    //
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 401) {
+        toast.add({ severity: 'error', summary: 'Credenciales Invalidas', detail: "Inicia sesión nuevamente", life: 6000 });
+        return router.push({ name: 'login' })
+      }
+
+      if (error.response?.status === 400) {
+        return toast.add({ severity: 'error', summary: 'Test Invalido', detail: error.response?.data.message ?? "Ocurrio un error", life: 6000 });
+      }
+
+      if (error.response?.status === 404) {
+        dataNotFound.value = true
+        return
+      }
+
+      toast.add({ severity: 'error', summary: 'Oops... Ocurrió un error', detail: "Intentelo más tarde", life: 6000 });
+    }
+  } finally {
+    loadingData.value = false
   }
 })
 </script>
@@ -375,6 +440,11 @@ nav {
   align-items: center;
   justify-content: space-between;
   padding: 0px 96px;
+}
+
+nav .buttons {
+  display: flex;
+  gap: 8px;
 }
 
 .icon-back {
@@ -510,5 +580,27 @@ label {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.btn-color {
+  background-color: #7C0405;
+  border-color: #7C0405;
+}
+
+.loader {
+  position: absolute;
+  font-size: 4rem;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+}
+
+.center-abs {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%);
 }
 </style>

@@ -19,14 +19,14 @@ export interface INewQuestion {
   id?: number
   temId: number
   testId?: number | null
-  QuestionTypeId: number
+  questionTypeId: number
   description: string
   image: string | null
   order: number
   points: number
   duration: number | null
   answers: INewAnswer[]
-  CaseSensitivity?: boolean
+  caseSensitivity?: boolean
 }
 
 export interface INewAnswer {

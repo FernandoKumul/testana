@@ -221,7 +221,7 @@ const AddQuestion = () => {
     image: null,
     order: newTest.questions.length + 1,
     points: 0,
-    QuestionTypeId: 2,
+    questionTypeId: 2,
     temId: questionIdTemp
   }
 
