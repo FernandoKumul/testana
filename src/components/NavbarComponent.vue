@@ -54,20 +54,12 @@ import type { ISearch } from '@/interfaces/ISearch';
 import router from '@/router';
 import { useRoute } from 'vue-router'
 import ConfirmDialog from 'primevue/confirmdialog';
-import InputText from 'primevue/inputtext';
-import IconField from 'primevue/iconfield';
 import { useConfirm } from "primevue/useconfirm";
 import Menu from 'primevue/menu';
-import Button from 'primevue/button';
-import Toolbar from 'primevue/toolbar';
 import 'primeicons/primeicons.css'
 import { ref } from 'vue';
-import router from '@/router';
 
 const confirm = useConfirm();
-
-const search = ref('');
-
 const useRouter = useRoute()
 
 
