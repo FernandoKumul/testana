@@ -42,7 +42,6 @@
   align-content: flex-start;
   flex-wrap: wrap;
   width: 100%;
-  margin-top: 50px;
   position: absolute;
   padding: 40px;
 }

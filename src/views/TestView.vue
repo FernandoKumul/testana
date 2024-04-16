@@ -11,24 +11,42 @@
         <div class="likes">
           <p>Creado por:</p>
           <div class="likes-icon">
-            <InputIcon class="pi pi-thumbs-up"></InputIcon>
+            <Button icon="pi pi-thumbs-up" severity="warning" rounded outlined aria-label="Notification" />
             <p>Cantidad</p>
           </div>
+        </div>
+
+        <div class="part-2">
+          <div class="description">
+            <h2>Descripción de la prueba:</h2>
+            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
+              Ut distinctio dolorum natus eveniet, odit deleniti voluptatibus 
+              omnis commodi aut, numquam quos est eos eum necessitatibus accusantium 
+              ducimus saepe provident nobis?</p>
+          </div>    
         </div>
       </div>
 
       <div class="button-container">
-        <Button label="Iniciar test"></Button>
-        <h2>Registro</h2>
-        <p>{ # } intentos</p>
-        <p>presicion?</p>
+        <div class="input-name">
+          <p>Coloque su nombre:</p>
+          <InputText id="username" v-model="value" />
+        </div>
+        
+        <router-link  to="/test/reply-one/:id" rel="noopener">
+          <Button label="Iniciar test" 
+                  class="btn-custom" 
+                  data-btn="custom"
+                  @click="visible = true" >
+          </Button>
+        </router-link>
+
+        <div class="registro">
+          <h2>Registro</h2>
+          <p>{ # } intentos</p>
+        </div>
       </div>
     </div>
-
-    <div class="description">
-      <h2>Descripción de la prueba:</h2>
-    </div>
-
 
   </div>
   <div class="something">
@@ -41,13 +59,27 @@
 
 <script lang="ts" setup>
 import Button from 'primevue/button';
-import InputIcon from 'primevue/inputicon';
 import 'primeicons/primeicons.css'
+import FloatLabel from 'primevue/floatlabel';
+import InputText from 'primevue/inputtext';
+import { ref } from 'vue';
+
+const value = ref(null);
+
 
 
 </script>
 
 <style scoped>
+
+.input-name{
+  margin: 20px 0px;
+}
+
+.input-name p{
+  margin: 5px 0px;
+}
+
 
 .likes{
   display: flex;
@@ -56,13 +88,14 @@ import 'primeicons/primeicons.css'
 
 .likes-icon{
   display: flex;
-
+  color: #FA8841;
   align-items: center
 }
 .likes-icon p {
-  margin: 0;
+  margin-left: 10px;
   display: flex;
   align-items: center;
+
 }
 
 .pi{
@@ -71,35 +104,37 @@ import 'primeicons/primeicons.css'
   height: 35px;
   width: 35px;
   padding: 5px;
-  border: solid 1px rgb(162, 162, 162);
+  border: solid 1px rgba(162, 162, 162, 0.212);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .something{
-  z-index: -1;
+  z-index: 0;
   display: flex;
   justify-content: end;
   align-items: end;
   align-content: end;
-  margin-bottom: -50px;
+  height: 100px;
 }
 
 .all{
-  z-index: 0;
+  z-index: 1;
   display: flex;
   flex-direction: column;
+  margin-top: 40px;
   align-items: center;
+  justify-content: center;
 }
 
 .part-1{
-  display: flex
-
+  display: flex;
+  justify-content: center;
 }
 
 .img-container{
-  width: 80%;
+  width: 40%;
 }
 
 .img-container h1{
@@ -118,15 +153,35 @@ import 'primeicons/primeicons.css'
   justify-content: end;
 
 }
-
 .description{
   background-color: #f7b26c54;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.description h2{
+  margin: 0;
+  font-weight: 500;
 }
 
 .button-container{
   background-color: #f7b26c54;
+  display: flex;
   margin-left: 40px;
-  margin-top: 88px;
+  width: 20%;
+  height: 100%;
+  padding: 30px;
+  border-radius: 6px;
+  margin-top: 86px;
 
+  flex-direction: column;
+
+}
+
+.button-container button{
+  width: 100%;
 }
 </style>
