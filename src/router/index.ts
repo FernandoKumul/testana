@@ -11,6 +11,7 @@ import EditTestView from '@/views/EditTestView.vue'
 import AnswerTestView from '@/views/AnswerTestView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
+import SearchTestView from '@/views/SearchTestView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -88,6 +89,12 @@ const router = createRouter({
       path: '/answer_test/:id',
       name: 'answer_test',
       component: AnswerTestView
+    },
+    // 13
+    {
+      path: '/search/:query',
+      name: 'search',
+      component: SearchTestView
     },
   ]
 })
