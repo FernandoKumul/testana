@@ -49,4 +49,19 @@ export default class TestService {
       throw error
     }
   }
+
+  static async GetPreviewById(testId: number) {
+    try {
+      const token = localStorage.getItem('token')
+      const response = await axios.get(`${BASE_URL}/test/preview/${testId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      return response.data.data
+    } catch (error) {
+      console.error('Error al obtener el test:', error);
+      throw error
+    }
+  }
 }
