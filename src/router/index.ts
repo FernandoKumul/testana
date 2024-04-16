@@ -12,6 +12,9 @@ import AnswerTestView from '@/views/AnswerTestView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import SearchTestView from '@/views/SearchTestView.vue'
+import UserService from '@/services/AuthService'
+
+const service = new UserService()
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -100,16 +103,18 @@ const router = createRouter({
 })
 
 export default router
-// Guards: Login, register si no estas iniciado te manda aca
-// Guards: create test, mytest, edit test mandar a login si no estas logeado
-// en el guard llamar al servicio que te da el usuario con el token, si no regresa al usuario mandar a login y borrar el token
-router.beforeEach((to, from, next) => {
-  if (to.name === 'dashboard', to.name === 'create_test', to.name === 'my_tests', to.name === 'edit_test') {
-    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'; 
+
+router.beforeEach(async(to, from, next) => {
+  console.log(to.name)
+  if (to.name === 'create_test' || to.name === 'my_tests' || to.name === 'edit_test') {
+    const isAuthenticated = await service.userLoged() ?? false
+    console.log(isAuthenticated)
     if (!isAuthenticated) {
-      next({ name: 'login' }); 
+      next({ name: 'dashboard' }); 
+      console.log('no autorizado')
     } else {
-      next(); 
+      next();
+      console.log('autorizado')
     }
   } else {
     next(); 

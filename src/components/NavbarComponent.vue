@@ -24,15 +24,21 @@
               severity="secondary"/>
       </router-link>
 
-      <router-link to="/create_test" rel="noopener">
+      <router-link to="/create_test" rel="noopener" :class="{ checkSession: check }">
         <Button label="Crear Tests" 
               raised
               icon="pi pi-plus" 
               severity="secondary"/>
       </router-link>
+      <router-link to="/login" rel="noopener" :class="{ signIn: signin }">
+        <Button label="Inicia Sesion" 
+              raised
+              icon="pi pi-sign-in" 
+              severity="secondary"/>
+      </router-link>
 
-      <div class="card flex justify-content-center">
-        <Button type="button" :label="userLoged.name"
+      <div class="card flex justify-content-center" :class="{ checkSession: check }">
+        <Button type="button" :label="service.user?.value.name"
                 icon="pi pi-user" 
                 @click="toggle" aria-haspopup="true" 
                 aria-controls="overlay_menu" 
@@ -47,7 +53,7 @@
 <script lang="ts" setup>
 import InputIcon from 'primevue/inputicon';
 import 'primeicons/primeicons.css';
-import { reactive, watch, ref, onMounted } from 'vue';
+import { reactive, watch, ref, type Ref, onMounted } from 'vue';
 import type { ISearch } from '@/interfaces/ISearch';
 import router from '@/router';
 import { useRoute } from 'vue-router'
@@ -63,14 +69,15 @@ import type { IUser } from '@/interfaces/IUser';
 const service = new authService()
 const confirm = useConfirm();
 const useRouter = useRoute()
-
 const menu = ref();
+const check = ref(true)
+const signin = ref(false)
 const items = ref([
     {
       label:'Opciones',
         items: [
             {
-              label: 'Perfil',
+              label: 'Mis Tests',
               icon: 'pi pi-user',
               command: () => {
                 router.push('/my_tests');
@@ -101,7 +108,7 @@ const closeSession = () => {
         acceptLabel: 'Aceptar',
         accept: () => {
           localStorage.removeItem('token')
-          router.push('/login');
+          checkSession()
         }
     });
 };
@@ -119,22 +126,32 @@ const submitSearch = async () => {
 
 watch(() => useRouter.params.query, () => {
   params.query = useRouter.params.query as string
+  checkSession()
 })
-let userLoged = reactive<IUser>({
-  name: '',
-  email: '',
-  password: '',
-  id: 0,
-  avatar: ''
+
+const userLoged: Ref<IUser> = service.getUser();
+console.log(userLoged.value)
+
+const checkSession = () => {
+  if (!localStorage.getItem('token')) {
+    check.value = true
+    signin.value = false
+  }
+  else {
+    check.value = false
+    signin.value = true
+  }
+}
+onMounted(() => {
+  checkSession()
 })
-watch(async () => useRouter.path != 'login', async () => {
-  userLoged = await service.userLoged()
-  console.log(useRouter.path)
-  console.log(userLoged.name)
-})
+
 </script>
 
 <style scoped>
+.checkSession, .signIn{
+  display: none;
+}
 .p-button {
   border-color: transparent;
   color: black;
