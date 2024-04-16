@@ -5,7 +5,9 @@
 
     <div class="column_1">
       <h1>¡Únete a nosotros!</h1>
-      <img src="/src/assets/img/Logo.png" alt="logo" />
+      <router-link to="/">
+          <img src="/src/assets/img/Logo.png" alt="logo">
+        </router-link>
     </div>
 
     <div class="column_2">
@@ -179,7 +181,6 @@ main {
   display: flex;
   margin: 0;
   min-height: 100vh;  
-  margin-top: 50px;
 }
 
 img {
