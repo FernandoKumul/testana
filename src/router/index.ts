@@ -60,9 +60,8 @@ const router = createRouter({
     },
     // 8
     {
-      // path: '/test/:id',
-      path: '/view-test',
-      name: 'view-test',
+      path: '/test/preview/:id',
+      name: 'test_preview',
       component: TestView
     },
     // 9
@@ -86,8 +85,8 @@ const router = createRouter({
     // 12
     {
       // ???
-      path: '/answer_test/:id',
-      name: 'answer_test',
+      path: '/test/reply-one/:id',
+      name: 'reply-one',
       component: AnswerTestView
     },
   ]

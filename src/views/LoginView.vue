@@ -5,7 +5,9 @@
 
     <div class="column_1">
       <h1>¡Bienvenido de nuevo!</h1>
-      <img src="/src/assets/img/Logo.png" alt="logo">
+        <router-link to="/">
+          <img src="/src/assets/img/Logo.png" alt="logo">
+        </router-link>
     </div>
 
     <div class="column_2">
@@ -27,7 +29,7 @@
               </FloatLabel>
               <small v-if="!validatePassword">La contraseña es requerida.</small>
 
-              <Button :loading="loading" type="submit" label="Iniciar"  />
+              <Button class="btn-custom" data-btn="custom" :loading="loading" type="submit" label="Iniciar"  />
             </form>
             <br>
             <RouterLink to="register">
@@ -118,7 +120,6 @@ const submitForm = async () => {
 <style scoped>
 main {
   display: flex;
-  margin: 0;
   min-height: 100vh;
 }
 

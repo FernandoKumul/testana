@@ -1,11 +1,40 @@
 <script setup lang="ts">
-const message = () => {
-  alert('Buuuuu')
-}
+import Toolbar from 'primevue/toolbar';
+import Button from 'primevue/button';
 </script>
 
 <template>
+
   <main> 
+    <Toolbar>
+
+      <template #start>
+        <div class="logo">
+        <router-link to="/">
+          <img src="/src/assets/img/Logo.png" alt="logo">
+        </router-link>
+        </div>
+      </template>
+
+      <template #end>
+        <router-link to="/register" rel="noopener">
+          <Button label="Registro" 
+              line
+              icon="pi pi-user" 
+              severity="secondary"/>
+        </router-link>
+
+        <router-link to="/login" rel="noopener">
+          <Button label="Iniciar sesión" 
+              line
+              icon="pi pi-user" 
+              severity="secondary"/>
+        </router-link>
+
+      </template>
+
+    </Toolbar>
+
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
       <rect x="0" y="0" width="1440" height="800" fill="#FFDECC" />
     </svg>
@@ -21,7 +50,10 @@ const message = () => {
     </div> 
     <div class="column_2">
       <h2>Bienvenido a la plataforma innovadora para la creación, realización y análisis de cuestionarios educativos. Puedes llevar tu experiencia de evaluación y aprendizaje al siguiente nivel de forma fácil, interactiva y eficiente. ¡Descubre todas las posibilidades que Testana tiene para ofrecerte y mejora tu práctica educativa hoy mismo!</h2>
-      <Button @click="message">Iniciar</Button>
+      <router-link to="/dashboard" rel="noopener">
+        <Button class="btn-custom" data-btn="custom" label="Iniciar" 
+              severity="secondary"/>
+      </router-link>
 
     </div>
     <h2 class="title">En nuestro sitio web puedes...</h2>
@@ -80,6 +112,36 @@ const message = () => {
 </template>
 
 <style scoped>
+
+.p-toolbar{
+    background-color: #FFDECC;
+    display: flex;
+    padding: 13px;
+    width: 100%;
+    border: none;
+  }
+
+.p-toolbar button{
+  display: flex;
+  margin-left: 10px;
+  background-color: transparent;
+  border: transparent;
+}
+
+.p-toolbar button:hover{
+  background-color: #F7B16C;
+
+}
+
+.logo{
+  display: flex;
+  margin-right:20px;
+}
+
+.logo img{
+  width: 50px;
+}
+
 main {
   display: flex;
   align-items: center;
@@ -118,7 +180,8 @@ h1{
   margin-top: -15%;
 }
 
-button{
+.column_2 button{
+  background-color: #F7B16C;
   width: 39%;
   font-size: large;
   font-size: medium;
@@ -150,12 +213,6 @@ button{
 .img-do{
     transition: all 500ms;
     margin: 0px 20px;
-}
-
-.img-do img:hover{
-    box-shadow: 2px 2px 10px #0000009b;
-    transform:scale(0.95);
-
 }
 
 .img-do img{
