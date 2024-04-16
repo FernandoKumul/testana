@@ -85,7 +85,7 @@ const router = createRouter({
     // 12
     {
       // ???
-      path: '/test/reply-one/:id',
+      path: '/test/reply-one/:idtest',
       name: 'reply-one',
       component: AnswerTestView
     },
