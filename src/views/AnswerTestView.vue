@@ -50,8 +50,38 @@
   </template>
 
 <script lang="ts" setup>
+import type { ITestReplyOne } from '@/interfaces/ITestReplyOne';
+import TestService from '@/services/TestService';
+import { AxiosError } from 'axios';
 import Button from 'primevue/button';
+import { useToast } from 'primevue/usetoast';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
+const route = useRoute()
+const toast = useToast()
+const testForReply = ref<ITestReplyOne | null>(null)
+
+onMounted(async() => {
+  try {
+    const testId = Number(route.params.idtest as string)
+
+    if(isNaN(testId)) {
+      toast.add({ severity: 'warn', summary: 'Id no valido', detail: "No existe un test con el id que usas", life: 6000 });
+    }
+    testForReply.value = await TestService.GetReplyOne(testId)
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 404) {
+        toast.add({ severity: 'error', summary: 'Test no encontrado', life: 6000 });
+        //No mostrar nada
+        return
+      }
+
+      toast.add({ severity: 'error', summary: 'Oops... Ocurrió un error', detail: "Intentelo más tarde", life: 6000 });
+    }
+  }
+})
 </script>
 
 <style scoped>

@@ -1,4 +1,5 @@
 import type { INewTest } from "@/interfaces/INewTest";
+import type { ITestReplyOne } from "@/interfaces/ITestReplyOne";
 import type { IUpdateTest } from "@/interfaces/IUpdateTest";
 import axios from "axios";
 
@@ -58,6 +59,22 @@ export default class TestService {
           'Authorization': `Bearer ${token}`
         }
       });
+      return response.data.data
+    } catch (error) {
+      console.error('Error al obtener el test:', error);
+      throw error
+    }
+  }
+
+  static async GetReplyOne(testId: number): Promise<ITestReplyOne> {
+    try {
+      const token = localStorage.getItem('token')
+      const response = await axios.get(`${BASE_URL}/test/reply-one/${testId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      console.log(response.data.data)
       return response.data.data
     } catch (error) {
       console.error('Error al obtener el test:', error);
