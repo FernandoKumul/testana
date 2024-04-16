@@ -18,25 +18,27 @@
 <script setup lang="ts">
 import Paginator from 'primevue/paginator';
 import Card from 'primevue/card';
-import { onMounted, ref, type Ref } from 'vue'
+import { onMounted, ref, watch, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
 import SearchService from '@/services/SearchService';
 import type { ICardTest } from '@/interfaces/ICardTest';
 
 
 const service = new SearchService()
-const first = ref(1)
+const first = ref(0)
 const rows = 6
 const router = useRoute()
-const params = first.value + '&pageSize=' + rows + '&Search=' + router.params.query
 
 const tests: Ref<ICardTest[]> = service.getTests()
 const totalTests = service.getCount()
 console.log(totalTests)
 
+watch(first, async () => {
+    await service.search((first.value + 1) + '&pageSize=' + rows + '&Search=' + router.params.query);
+})
 
 onMounted(async () => {
-    await service.search(params);
+    await service.search((first.value + 1) + '&pageSize=' + rows + '&Search=' + router.params.query);
 })
 </script>
 
