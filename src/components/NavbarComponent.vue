@@ -32,7 +32,7 @@
       </router-link>
 
       <div class="card flex justify-content-center">
-        <Button type="button" label="Username"
+        <Button type="button" :label="userLoged.name"
                 icon="pi pi-user" 
                 @click="toggle" aria-haspopup="true" 
                 aria-controls="overlay_menu" 
@@ -47,7 +47,7 @@
 <script lang="ts" setup>
 import InputIcon from 'primevue/inputicon';
 import 'primeicons/primeicons.css';
-import { reactive, watch } from 'vue';
+import { reactive, watch, ref, onMounted } from 'vue';
 import type { ISearch } from '@/interfaces/ISearch';
 import router from '@/router';
 import { useRoute } from 'vue-router'
@@ -57,13 +57,12 @@ import Menu from 'primevue/menu';
 import Button from 'primevue/button';
 import Toolbar from 'primevue/toolbar';
 import 'primeicons/primeicons.css'
-import { ref } from 'vue';
+import authService from '@/services/AuthService';
+import type { IUser } from '@/interfaces/IUser';
 
+const service = new authService()
 const confirm = useConfirm();
-
 const useRouter = useRoute()
-
-
 
 const menu = ref();
 const items = ref([
@@ -102,6 +101,7 @@ const closeSession = () => {
         acceptLabel: 'Aceptar',
         accept: () => {
           localStorage.removeItem('token')
+          router.push('/login');
         }
     });
 };
@@ -120,7 +120,18 @@ const submitSearch = async () => {
 watch(() => useRouter.params.query, () => {
   params.query = useRouter.params.query as string
 })
-
+let userLoged = reactive<IUser>({
+  name: '',
+  email: '',
+  password: '',
+  id: 0,
+  avatar: ''
+})
+watch(async () => useRouter.path != 'login', async () => {
+  userLoged = await service.userLoged()
+  console.log(useRouter.path)
+  console.log(userLoged.name)
+})
 </script>
 
 <style scoped>

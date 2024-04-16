@@ -33,4 +33,18 @@ export default class UserService {
       throw error
     }
   }
+  async userLoged(): Promise<IUser> {
+    try {
+      const token = localStorage.getItem('token')
+      const response = await axios.get(`${BASE_URL}/auth`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      return this.user.value = response.data.data
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
 }
