@@ -30,14 +30,14 @@ interface Test {
   Title: string;
   Image?: string;
   Precision: number;
-  Type: string; // Propiedad Type para diferenciar entre "Hechos" y "Creados" -.-
+  Type: string; // Propiedad Type para diferenciar entre "Contestados" y "Creados" -.-
 }
 
 const items = ref([
-  { label: 'Hechos' },
+  { label: 'Contestados' },
   { label: 'Creados' }
 ]);
-const selectedTab = ref('Hechos'); // Inicialmente se selecciona la pestaña "Hechos"
+const selectedTab = ref('Contestados'); // Inicialmente se selecciona la pestaña "Contestados"
 
 const tests = ref<Test[]>([]);
 
@@ -45,7 +45,7 @@ const fetchTests = async () => {
   try {
     const token = localStorage.getItem('token');
     let response;
-    if (selectedTab.value === 'Hechos') {
+    if (selectedTab.value === 'Contestados') {
       response = await axios.get('https://localhost:7003/api/test/done', {
         headers: {
           'Authorization': `Bearer ${token}`
