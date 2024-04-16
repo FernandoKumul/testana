@@ -124,6 +124,11 @@ watch(() => useRouter.params.query, () => {
 </script>
 
 <style scoped>
+.p-button {
+  border-color: transparent;
+  color: black;
+  margin: 0px 7px;
+}
 
 .p-toolbar {
   background-color: #FFDECC;
