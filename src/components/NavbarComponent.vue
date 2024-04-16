@@ -6,7 +6,7 @@
       </div>
       <form @submit.prevent="submitSearch" autocomplete="" role="search" class="form-search">
         <label for="search">Encuentra nuevos tests</label>
-        <input type="text" placeholder="Buscar..." autofocus required v-model="params.query"/>
+        <input type="text" placeholder="Buscar..." autofocus v-model="params.query"/>
         <button type="submit" class="btn-search">
           <InputIcon class="pi pi-search" />
         </button>
@@ -30,9 +30,13 @@ import InputIcon from 'primevue/inputicon';
 import Button from 'primevue/button';
 import Toolbar from 'primevue/toolbar';
 import 'primeicons/primeicons.css';
-import { reactive } from 'vue';
+import { reactive, watch } from 'vue';
 import type { ISearch } from '@/interfaces/ISearch';
 import router from '@/router';
+import { useRoute } from 'vue-router'
+
+
+const useRouter = useRoute()
 
 
 const params = reactive<ISearch>({
@@ -45,6 +49,10 @@ const submitSearch = async () => {
   console.log('searching...');
   router.push({ name: 'search', params: { query: params.query } })
 }
+
+watch(() => useRouter.params.query, () => {
+  params.query = useRouter.params.query as string
+})
 
 </script>
 

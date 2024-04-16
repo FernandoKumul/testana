@@ -33,7 +33,7 @@ const tests: Ref<ICardTest[]> = service.getTests()
 const totalTests = service.getCount()
 console.log(totalTests)
 
-watch(first, async () => {
+watch([first, () => router.params.query], async () => {
     await service.search((first.value + 1) + '&pageSize=' + rows + '&Search=' + router.params.query);
 })
 
