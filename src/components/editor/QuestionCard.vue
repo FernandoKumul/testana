@@ -2,7 +2,7 @@
   <article>
     <header class="header-question">
       <div>
-        <Dropdown inputId="visibility" v-model="question.QuestionTypeId" optionValue="value" :options="typesVisibility" @change="changeAnswer"
+        <Dropdown inputId="visibility" v-model="question.questionTypeId" optionValue="value" :options="typesVisibility" @change="changeAnswer"
           optionLabel="name" placeholder="Visibilidad" style="margin-right: 8px;" />
         <Button icon="pi pi-plus" severity="secondary" outlined @click="addAnswer" />
       </div>
@@ -18,27 +18,27 @@
     <main>
       <div class="description">
         <span>{{ question.order }}.</span>
-        <InputText type="text" v-model="question.description" variant="filled" />
+        <InputText :invalid="question.description === '' && dirtyQuestion" type="text" v-model.trim="question.description" variant="filled" />
       </div>
-      <template v-if="question.QuestionTypeId === 1">
+      <template v-if="question.questionTypeId === 1">
         <div class="container-answers">
           <!-- Preguntas abiertas -->
           <div class="flex-align" v-for="answer in question.answers" :key="answer.temId">
-            <InputText class="remove-border" type="text" v-model="answer.text" />
+            <InputText class="remove-border" type="text" v-model.trim="answer.text" :invalid="answer.text === '' && dirtyQuestion" />
             <i class="pi pi-times" style="cursor: pointer;" @click="deleteAnswer(answer.temId)"></i>
           </div>
         </div>
         <div class="flex-align" style="margin-top: 8px;">
-          <InputSwitch v-model="question.CaseSensitivity" />
+          <InputSwitch v-model="question.caseSensitivity" />
           <span>Sensibilidad a las mayusculas y minusculas</span>
         </div>
       </template>
 
-      <div class="container-answers" v-if="question.QuestionTypeId === 2">
+      <div class="container-answers" v-if="question.questionTypeId === 2">
         <!-- Preguntas multples -->
         <div class="flex-align" v-for="answer in question.answers" :key="answer.temId">
           <Checkbox v-model="answer.correct" :binary="true" />
-          <InputText class="remove-border" type="text" v-model="answer.text" />
+          <InputText class="remove-border" type="text" v-model.trim="answer.text" :invalid="answer.text === '' && dirtyQuestion" />
           <i class="pi pi-times" style="cursor: pointer;" @click="deleteAnswer(answer.temId)"></i>
         </div>
       </div>
@@ -56,6 +56,7 @@ import Checkbox from 'primevue/checkbox';
 import Dropdown from 'primevue/dropdown';
 import InputSwitch from 'primevue/inputswitch';
 import InputText from 'primevue/inputtext';
+import { onMounted } from 'vue';
 
 const question = defineModel<INewQuestion>({ required: true })
 const emits = defineEmits<{
@@ -65,7 +66,8 @@ const emits = defineEmits<{
 }>()
 
 const props = defineProps<{
-  total: number
+  total: number,
+  dirtyQuestion: boolean
 }>()
 
 const typesVisibility = [
@@ -77,7 +79,7 @@ let answerIdTemp = 1
 
 const addAnswer = () => {
   const newAnswer: INewAnswer = {
-    correct: question.value.QuestionTypeId === 1 ? true : false,
+    correct: question.value.questionTypeId === 1 ? true : false,
     text: '',
     temId: answerIdTemp
   }
@@ -94,16 +96,23 @@ const deleteAnswer = (temId: number) => {
 }
 
 const changeAnswer = () => {
-  if (question.value.QuestionTypeId === 1) {
+  if (question.value.questionTypeId === 1) {
     for (let answer of question.value.answers) {
       answer.correct = true
     }
   }
 
-  if (question.value.QuestionTypeId === 2) {
-    delete question.value.CaseSensitivity
+  if (question.value.questionTypeId === 2) {
+    delete question.value.caseSensitivity
   }
 }
+
+onMounted(() => {
+  for (let answer of question.value.answers) {
+    answer.temId = answer.id || answerIdTemp
+    answerIdTemp = answer.temId + 1
+  }
+})
 </script>
 
 <style scoped>
