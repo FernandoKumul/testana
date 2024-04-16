@@ -178,7 +178,8 @@ h6 {
 main {
   display: flex;
   margin: 0;
-  min-height: 100vh;
+  min-height: 100vh;  
+  margin-top: 50px;
 }
 
 img {

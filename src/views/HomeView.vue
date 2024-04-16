@@ -1,7 +1,5 @@
 <script setup lang="ts">
-const message = () => {
-  alert('Buuuuu')
-}
+
 </script>
 
 <template>
@@ -21,7 +19,10 @@ const message = () => {
     </div> 
     <div class="column_2">
       <h2>Bienvenido a la plataforma innovadora para la creación, realización y análisis de cuestionarios educativos. Puedes llevar tu experiencia de evaluación y aprendizaje al siguiente nivel de forma fácil, interactiva y eficiente. ¡Descubre todas las posibilidades que Testana tiene para ofrecerte y mejora tu práctica educativa hoy mismo!</h2>
-      <Button @click="message">Iniciar</Button>
+      <router-link to="/" rel="noopener">
+        <Button class="btn-custom" data-btn="custom" label="Iniciar" 
+              severity="secondary"/>
+      </router-link>
 
     </div>
     <h2 class="title">En nuestro sitio web puedes...</h2>
@@ -150,12 +151,6 @@ button{
 .img-do{
     transition: all 500ms;
     margin: 0px 20px;
-}
-
-.img-do img:hover{
-    box-shadow: 2px 2px 10px #0000009b;
-    transform:scale(0.95);
-
 }
 
 .img-do img{

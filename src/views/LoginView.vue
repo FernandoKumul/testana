@@ -118,7 +118,7 @@ const submitForm = async () => {
 <style scoped>
 main {
   display: flex;
-  margin: 0;
+  margin-top: 50px;
   min-height: 100vh;
 }
 
