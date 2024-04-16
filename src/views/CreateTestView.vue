@@ -1,5 +1,7 @@
 <template>
   <nav>
+    <i class="pi pi-arrow-left icon-back" @click="router.go(-1)" ></i>
+
     <Button @click="createTest" label="Crear Test" :loading="loadingCreate" />
   </nav>
   <main>
@@ -7,13 +9,11 @@
       <article class="card">
         <div class="mb-12">
           <label for="title">Título</label>
-          <InputText id="title" v-model="newTest.title" type="text" placeholder="Test sin título" />
-          <!-- <small>El título es obligatorio</small> -->
+          <InputText id="title" :invalid="errorTitle" v-model.trim="newTest.title" type="text" placeholder="Test sin título" />
         </div>
         <div>
           <label for="description">Descripción</label>
-          <Textarea id="description" v-model="newTest.description" placeholder="Habla un poco sobre tu test" rows="3" />
-          <!-- <small>La descripción es obligatoria</small> -->
+          <Textarea id="description" :invalid="errorDescription" v-model.trim="newTest.description" placeholder="Habla un poco sobre tu test" rows="3" />
         </div>
       </article>
 
@@ -24,7 +24,8 @@
 
       <div class="container-questions">
         <template v-for="(question, index) in sortOrderQuestions" :key="question.temId">
-          <QuestionCard class="card" v-model="sortOrderQuestions[index]" :total="newTest.questions.length" @down="downQuestion" @up="upQuestion" @delete="deleteQuestion" />
+          <QuestionCard class="card" v-model="sortOrderQuestions[index]" :total="newTest.questions.length" :dirty-question="dirtyQuestions[''+question.temId]"
+          @down="downQuestion" @up="upQuestion" @delete="deleteQuestion" />
         </template>
       </div>
     </section>
@@ -107,6 +108,10 @@ interface ITagShow {
   text: string
 }
 
+interface IQuestionError {
+  [key: string]: boolean;
+}
+
 const typesVisibility = [
   { name: 'Público', value: 'public' },
   { name: 'Privado', value: 'private' },
@@ -129,8 +134,28 @@ const tagCurrent = ref('')
 const tags = ref<ITagShow[]>([])
 const loadingImage = ref(false)
 const loadingCreate = ref(false)
+const dirtyForm = ref(false)
+
 let tagIndex = 1
 let questionIdTemp = 1
+
+
+const newTest = reactive<INewTest>({
+  userId: 0,
+  title: '',
+  description: '',
+  color: 'orange',
+  visibility: 'public',
+  image: null,
+  status: false,
+  random: false,
+  duration: null,
+  evaluateByQuestion: true,
+  tags: '',
+  questions: []
+})
+
+const dirtyQuestions = reactive<IQuestionError>({})
 
 const addTag = () => {
   if (tagCurrent.value.trim() === "") return
@@ -177,6 +202,7 @@ const deleteQuestion = (temId: number) => {
   if (findIndex == -1) return
 
   const orderDelete = newTest.questions[findIndex].order
+  delete dirtyQuestions['' + temId]
   newTest.questions.splice(findIndex, 1)
 
   for (let question of newTest.questions) {
@@ -195,29 +221,15 @@ const AddQuestion = () => {
     image: null,
     order: newTest.questions.length + 1,
     points: 0,
-    QuestionTypeId: 2,
+    questionTypeId: 2,
     temId: questionIdTemp
   }
 
   questionIdTemp++
 
+  dirtyQuestions['' + newQuestion.temId] = false
   newTest.questions.push(newQuestion)
 }
-
-const newTest = reactive<INewTest>({
-  userId: 0,
-  title: '',
-  description: '',
-  color: 'orange',
-  visibility: 'public',
-  image: null,
-  status: false,
-  random: false,
-  duration: null,
-  evaluateByQuestion: true,
-  tags: '',
-  questions: []
-})
 
 const upQuestion = (temId: number) => {
   const findIndex = newTest.questions.findIndex(item => item.temId == temId)
@@ -247,7 +259,40 @@ const downQuestion = (temId: number) => {
   
 }
 
+const validateAllQuestionsAnswers = () => {
+  for(let question of newTest.questions) {
+    
+    if(question.description === '') {
+      toast.add({ severity: 'warn', summary: 'Pregunta vacia', detail: `La pregunta ${question.order} está vacia`, life: 6000 });  
+      return false
+    }
+    
+    let correctAnswer = 0
+    for(let answer of question.answers) {
+      if(answer.text === '') {
+        toast.add({ severity: 'warn', summary: 'Respuesta vacia', detail: `Una respuesta de la pregunta ${question.order} está vacia`, life: 6000 });  
+        return false
+      }
+
+      if (answer.correct) correctAnswer++
+    }
+
+    if (correctAnswer === 0) {
+      toast.add({ severity: 'warn', summary: 'Sin respuesta correcta', detail: `La pregunta ${question.order} no tiene respuesta correcta`, life: 6000 });  
+      return false
+    }
+  }
+  return true
+}
+
 const createTest = async () => {
+  dirtyForm.value = true
+  for(let key in dirtyQuestions) {
+    dirtyQuestions[key] = true
+  }
+
+  if(errorTitle.value || errorDescription.value || !validateAllQuestionsAnswers()) return
+
   newTest.tags = ''
   for (let item of tags.value) {
     newTest.tags += item.text + ','
@@ -288,12 +333,41 @@ const sortOrderQuestions = computed(() => {
     return a.order - b.order;
   });
 })
+
+const errorTitle = computed(() => {
+  if (!dirtyForm.value) return false
+
+  if (newTest.title === '') {
+    return true
+  }
+
+  return false
+})
+
+const errorDescription = computed(() => {
+  if (!dirtyForm.value) return false
+
+  if (newTest.description === '') {
+    return true
+  }
+
+  return false
+})
 </script>
 
 <style scoped>
 nav {
   background-color: #FFDECC;
   height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 96px;
+}
+
+.icon-back {
+  cursor: pointer;
+  font-size: 1.5rem;
 }
 
 textarea {
