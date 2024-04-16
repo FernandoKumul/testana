@@ -11,6 +11,7 @@ import EditTestView from '@/views/EditTestView.vue'
 import AnswerTestView from '@/views/AnswerTestView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
+import SearchTestView from '@/views/SearchTestView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -89,7 +90,16 @@ const router = createRouter({
       name: 'reply-one',
       component: AnswerTestView
     },
+    // 13
+    {
+      path: '/search/:query',
+      name: 'search',
+      component: SearchTestView
+    },
   ]
 })
 
 export default router
+// Guards: Login, register si no estas iniciado te manda aca
+// Guards: create test, mytest, edit test mandar a login si no estas logeado
+// en el guard llamar al servicio que te da el usuario con el token, si no regresa al usuario mandar a login y borrar el token
