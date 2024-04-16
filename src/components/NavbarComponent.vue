@@ -46,8 +46,6 @@
 
 <script lang="ts" setup>
 import InputIcon from 'primevue/inputicon';
-import Button from 'primevue/button';
-import Toolbar from 'primevue/toolbar';
 import 'primeicons/primeicons.css';
 import { reactive, watch } from 'vue';
 import type { ISearch } from '@/interfaces/ISearch';
@@ -61,8 +59,6 @@ import { ref } from 'vue';
 
 const confirm = useConfirm();
 const useRouter = useRoute()
-
-
 
 const menu = ref();
 const items = ref([
@@ -124,8 +120,9 @@ watch(() => useRouter.params.query, () => {
 
 <style scoped>
 .p-button {
-  background-color: #7C0405;
-
+  border-color: transparent;
+  color: black;
+  margin: 0px 7px;
 }
 
 .p-toolbar {
