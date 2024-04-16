@@ -6,7 +6,7 @@ import { useRoute } from 'vue-router';
 
 // Obtener el objeto route actual
 const route = useRoute();
-const viewForNavBar = ['dashboard','aviso_privacidad','faq','terminos_condiciones','test_preview','my_tests'];
+const viewForNavBar = ['dashboard','aviso_privacidad','faq','terminos_condiciones','test_preview','my_tests','search'];
 const viewForFooter = ['dashboard','home','aviso_privacidad','faq','terminos_condiciones','test_preview','my_tests']
 // Extraer la ruta actual del objeto route
 </script>
