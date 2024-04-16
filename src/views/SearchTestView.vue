@@ -2,8 +2,11 @@
     <div class="main">
         <h1>Resultados de la busqueda</h1>
         <i class="pi pi-spin pi-spinner loader" v-if="loading" />
+        <div class="height notFound" v-else-if="notFound"  >
+            <h1>No se encontraron resultados</h1>
+        </div>
         <div class="grid-search" v-else :class="{ height: minheight }">
-            <Card style="width: 25rem; overflow: hidden; height: 325px;" v-for="test in tests" :key="test.id">
+            <Card style="width: 25rem; overflow: hidden; height: 350px; cursor: pointer;" v-for="test in tests" :key="test.id" v-on:click="preview" >
                 <template #header>
                     <img alt="user header" style="width: 25rem;" :src="test.image" />
                 </template>
@@ -22,6 +25,7 @@ import { onMounted, ref, watch, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
 import SearchService from '@/services/SearchService';
 import type { ICardTest } from '@/interfaces/ICardTest';
+import Router from '@/router';
 
 const service = new SearchService()
 const first = ref(0)
@@ -30,9 +34,14 @@ const router = useRoute()
 
 const minheight = ref(false)
 const loading = ref(true)
+const notFound = ref(false)
 const tests: Ref<ICardTest[]> = service.getTests()
 const totalTests = service.getCount()
 
+const preview = (/* test: ICardTest */) => {
+    console.log('mandando a test')
+    Router.push({ name: 'dashboard'})
+}
 
 watch([first, () => router.params.query], async () => {
     loading.value = true
@@ -43,6 +52,11 @@ watch([first, () => router.params.query], async () => {
     } else {
         minheight.value = false
     }
+    if (tests.value.length === 0) {
+        notFound.value = true
+    } else {
+        notFound.value = false
+    }
 })
 
 onMounted(async () => {
@@ -50,8 +64,13 @@ onMounted(async () => {
     loading.value = false
     if (tests.value.length < 4) {
         minheight.value = true
-    }else{
+    } else {
         minheight.value = false
+    }
+    if (tests.value.length === 0) {
+        notFound.value = true
+    } else {
+        notFound.value = false
     }
 
 })
@@ -85,8 +104,13 @@ h1 {
     margin-left: 48%;
     display: absolute;
 }
+.notFound {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .height {
-    min-height: calc(100vh - 249px);
+    min-height: calc(100vh - 250px);
 }
 </style>
