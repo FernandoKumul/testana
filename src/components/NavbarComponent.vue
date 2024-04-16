@@ -1,8 +1,11 @@
 <template>
+  <ConfirmDialog></ConfirmDialog>
   <Toolbar>
     <template #start>
       <div class="logo">
-        <img src="/src/assets/img/Logo.png" alt="logo">
+        <router-link to="/">
+          <img src="/src/assets/img/Logo.png" alt="logo">
+        </router-link>
       </div>
       <form @submit.prevent="submitSearch" autocomplete="" role="search" class="form-search">
         <label for="search">Encuentra nuevos tests</label>
@@ -11,15 +14,31 @@
           <InputIcon class="pi pi-search" />
         </button>
       </form>
-
-    </template>
+    </template>  
 
     <template #end>
-      <div>
-        <Button label="Files" text plain icon="pi pi-plus" />
-        <Button label="Edit" text plain />
-        <Button label="View" text plain />
-      </div>
+      <router-link to="/dashboard" rel="noopener">
+        <Button label="Panel" 
+              raised 
+              icon="pi pi-folder-open" 
+              severity="secondary"/>
+      </router-link>
+
+      <router-link to="/create_test" rel="noopener">
+        <Button label="Crear Tests" 
+              raised
+              icon="pi pi-plus" 
+              severity="secondary"/>
+      </router-link>
+
+      <div class="card flex justify-content-center">
+        <Button type="button" label="Username"
+                icon="pi pi-user" 
+                @click="toggle" aria-haspopup="true" 
+                aria-controls="overlay_menu" 
+                severity="secondary" raised/>
+        <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
+    </div>
     </template>
 
   </Toolbar>
@@ -34,10 +53,65 @@ import { reactive, watch } from 'vue';
 import type { ISearch } from '@/interfaces/ISearch';
 import router from '@/router';
 import { useRoute } from 'vue-router'
+import ConfirmDialog from 'primevue/confirmdialog';
+import InputText from 'primevue/inputtext';
+import IconField from 'primevue/iconfield';
+import { useConfirm } from "primevue/useconfirm";
+import Menu from 'primevue/menu';
+import Button from 'primevue/button';
+import Toolbar from 'primevue/toolbar';
+import 'primeicons/primeicons.css'
+import { ref } from 'vue';
+import router from '@/router';
 
+const confirm = useConfirm();
+
+const search = ref('');
 
 const useRouter = useRoute()
 
+
+
+const menu = ref();
+const items = ref([
+    {
+      label:'Opciones',
+        items: [
+            {
+              label: 'Perfil',
+              icon: 'pi pi-user',
+              command: () => {
+                router.push('/my_tests');
+              }
+            },
+            {
+                label: 'Cerrar Sesión',
+                icon: 'pi pi-sign-out',
+                command: () => {
+                  closeSession()
+                }
+            }
+        ]
+    }
+]);
+
+const toggle = (event: Event) => {
+    menu.value.toggle(event);
+};
+
+const closeSession = () => {
+    confirm.require({
+        message: '¿Estás seguro de cerrar tu sesión?',
+        header: 'Cerrar sesión',
+        icon: 'pi pi-exclamation-triangle',
+        rejectClass: 'p-button-secondary p-button-outlined',
+        rejectLabel: 'Cancelar',
+        acceptLabel: 'Aceptar',
+        accept: () => {
+          localStorage.removeItem('token')
+        }
+    });
+};
 
 const params = reactive<ISearch>({
   pageNumber: 1,
@@ -68,6 +142,7 @@ watch(() => useRouter.params.query, () => {
   padding: 13px;
 }
 
+
 .logo {
   display: flex;
   margin-right: 20px;
@@ -91,7 +166,14 @@ input,
   color: #7c0404b5;
   font-size: 1rem;
 }
+  .searcher{
+    position: absolute;
+    margin-left: 207px;
+    background-color: #7C0405;
+    color: white;
 
+  }
+  
 input[type="text"] {
   outline: 0;
   width: 100%;

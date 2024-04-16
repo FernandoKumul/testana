@@ -11,6 +11,8 @@ import './assets/theme/aura-light/theme.css'
 import ToastService from 'primevue/toastservice';
 import Button from 'primevue/button';
 import Divider from 'primevue/divider';
+import 'primeicons/primeicons.css'
+import ConfirmationService from 'primevue/confirmationservice';
 
 
 const app = createApp(App)
@@ -19,5 +21,6 @@ app.use(router)
 app.component('Button', Button)
 app.component('Divider', Divider)
 app.use(ToastService);
+app.use(ConfirmationService);
 
 app.mount('#app')

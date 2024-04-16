@@ -5,7 +5,9 @@
 
     <div class="column_1">
       <h1>¡Únete a nosotros!</h1>
-      <img src="/src/assets/img/Logo.png" alt="logo" />
+      <router-link to="/">
+          <img src="/src/assets/img/Logo.png" alt="logo">
+        </router-link>
     </div>
 
     <div class="column_2">
@@ -54,7 +56,7 @@
               </FloatLabel>
               <small v-if="!validateConfirmPassword">La contraseñas no coinciden.</small>
 
-              <Button :loading="loading" type="submit" label="Iniciar" />
+              <Button data-btn="custom" :loading="loading" type="submit" label="Iniciar" />
             </form>
             <br />
             <RouterLink to="login"> ¿Ya tienes una cuenta? Inicia sesión </RouterLink>
@@ -178,7 +180,7 @@ h6 {
 main {
   display: flex;
   margin: 0;
-  min-height: 100vh;
+  min-height: 100vh;  
 }
 
 img {
