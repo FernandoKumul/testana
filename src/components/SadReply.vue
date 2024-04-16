@@ -1,12 +1,12 @@
 <template>
     <div class="all">
         <div class="back">
-            <img src="/src/assets/img/happy.jpg" alt="happy">
+            <img src="/src/assets/img/sad.jpg" alt="happy" style="height: 100%; width: 100%;">
         </div>
         <div class="out-container">
             <div class="container">
-                <h1>¡Felicidades!</h1>
-                <h1>¡Concluiste el test!</h1>
+                <h1>¡Oh no!</h1>
+                <h1>¡Concluiste el test pero tu calificación fue muy baja!</h1>
                 <h2>Puntuación</h2>
                 <p>#/#</p>
 
@@ -60,7 +60,7 @@ import Button from 'primevue/button';
     justify-content: center;
     width: 100%;
     margin: 0;
-    margin-top: -340px;
+    margin-top: -300px;
 }
 
 h1{
@@ -107,17 +107,18 @@ p{
     flex-direction: column;
     padding: 30px 15px;
     width: 50%;
+    margin-top: 100px;
 }
 
 .back{
-    object-fit:contain;
+    object-fit:cover;
     position: absolute;
     z-index: -2;
+    width: 100%;
+    height: 100%;
 }
 
 .back img{
-    width: 100%;
-    object-fit:fill;
     border-radius: 0px 0px 100% 100%;
     margin-top: -100px;
 }
