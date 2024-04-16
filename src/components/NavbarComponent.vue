@@ -7,6 +7,7 @@
           <img src="/src/assets/img/Logo.png" alt="logo">
         </router-link>
       </div>
+
       <IconField iconPosition="right">
           <Button class="searcher" icon="pi pi-search"> </Button>
           <InputText v-model="search" placeholder="Buscar un test..." />
@@ -102,16 +103,6 @@ const closeSession = () => {
 </script>
   
 <style scoped>
-
-.p-menu{
-  background-color: #7C0405;
-}
-
-.p-submenu-header{
-  /* padding: 0px; */
-  background-color: #7C0405;
-
-}
 
 .p-button {
   border-color: transparent;

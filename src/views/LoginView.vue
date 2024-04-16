@@ -5,7 +5,9 @@
 
     <div class="column_1">
       <h1>¡Bienvenido de nuevo!</h1>
-      <img src="/src/assets/img/Logo.png" alt="logo">
+        <router-link to="/">
+          <img src="/src/assets/img/Logo.png" alt="logo">
+        </router-link>
     </div>
 
     <div class="column_2">
@@ -118,7 +120,6 @@ const submitForm = async () => {
 <style scoped>
 main {
   display: flex;
-  margin-top: 50px;
   min-height: 100vh;
 }
 
