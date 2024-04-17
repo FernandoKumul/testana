@@ -8,7 +8,7 @@
         <div class="grid-search" v-else :class="{ height: minheight }">
             <Card style="width: 25rem; overflow: hidden; height: 350px; cursor: pointer;" v-for="test in tests" :key="test.id" v-on:click="preview" >
                 <template #header>
-                    <img alt="user header" style="width: 25rem;" :src="test.image" />
+                    <img alt="user header" class="card-img" :src="test.image" />
                 </template>
                 <template #title>{{ test.title }}</template>
                 <template #subtitle>{{ test.author }}</template>
@@ -77,6 +77,13 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+
+.card-img{
+    object-fit: cover;
+    width: 100%;
+    aspect-ratio: 16/9;
+}
+
 .main {
     padding: 20px;
 }
