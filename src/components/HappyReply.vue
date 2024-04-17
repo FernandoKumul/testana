@@ -1,14 +1,22 @@
 <template>
     <div class="all">
         <div class="back">
-            <img src="/src/assets/img/happy.jpg" alt="happy">
+            <img :src="(props.corrects / props.total) > .3 ? '/src/assets/img/happy.jpg': '/src/assets/img/sad.jpg'" alt="happy">
         </div>
         <div class="out-container">
             <div class="container">
-                <h1>¡Felicidades!</h1>
-                <h1>¡Concluiste el test!</h1>
-                <h2>Puntuación</h2>
-                <p>#/#</p>
+                <template v-if="(props.corrects / props.total) > .3">
+                    <h1>¡Felicidades!</h1>
+                    <h1>¡Concluiste el test!</h1>
+                    <h2>Puntuación</h2>
+                </template>
+                <template v-else >
+                    <h1>¡Oh no!</h1>
+                    <h1>¡Concluiste el test pero tu calificación fue muy baja!</h1>
+                    <h2>Puntuación</h2>
+                </template>
+                <p>{{ props.corrects }} / {{ props.total  }}</p>
+
 
             </div>
         </div>
@@ -27,7 +35,7 @@
         </div>
 
         <div class="button-continue">
-          <router-link to="/" rel="noopener">
+          <router-link to="/dashboard" rel="noopener">
             <Button class="btn-custom" 
                     data-btn="custom" label="Continuar" 
                     severity="secondary"/>
@@ -40,6 +48,11 @@
 
 <script lang="ts" setup>
 import Button from 'primevue/button';
+
+const props = defineProps<{
+    corrects: number,
+    total: number
+}>()
 </script>
 
 <style scoped>
@@ -54,8 +67,7 @@ import Button from 'primevue/button';
 }
 
 .button-continue{
-    z-index: 1;
-    position: absolute;
+
     display: flex;
     justify-content: center;
     width: 100%;
@@ -84,6 +96,8 @@ p{
     z-index: 0;
     position: absolute;
     width: 100%;
+    /* height: 100vh; */
+    /* overflow: hidden; */
 }
 
 .out-container{
@@ -105,7 +119,7 @@ p{
     display: flex;
     align-items: center;
     flex-direction: column;
-    padding: 30px 15px;
+    padding: 50px 15px;
     width: 50%;
 }
 
