@@ -1,64 +1,73 @@
 <template>
   <div class="main">
     <h1>Test que has creado</h1>
-    <TabMenu :model="items" @change="handleTabChange" />
+    <TabMenu :model="items" :activeIndex="tabId" @tab-change="handleTabChange" />
     <div class="grid-search">
-      <div v-for="test in filteredTests" :key="test.Id">
+      <div v-for="test in tests" :key="test.id"  style="position: relative;">
         <Card style="width: 25rem; overflow: hidden;">
           <template #header>
-            <img :src="test.Image" alt="Test Image" class="card-image" />
+            <img :src="test.image" alt="Test Image" class="card-img" />
           </template>
-          <h2>{{ test.Title }}</h2>
-          <p>Autor: {{ test.AuthorName }}</p>
+          <template #title>{{ test.title }}</template>
+          <template #subtitle>{{ test.authorName }}</template>
         </Card>
+
+        <RouterLink class="edit-icon"  :to="{ name: 'edit_test', params: {id: test.id}}">
+          <Button icon="pi pi-file-edit" severity="secondary" rounded aria-label="Editar" />
+        </RouterLink>
       </div>
     </div>
-    <Paginator :rows="6" :totalRecords="filteredTests.length" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import Paginator from 'primevue/paginator';
 import Card from 'primevue/card';
-import TabMenu from 'primevue/tabmenu';
+import Button from 'primevue/button';
+import Menu from 'primevue/menu';
+import TabMenu, { type TabMenuChangeEvent } from 'primevue/tabmenu';
+import { useRouter } from 'vue-router';
+
+const tabId = ref(0)
+const router = useRouter();
 
 interface Test {
-  Id: number;
-  AuthorName: string;
-  Title: string;
-  Image?: string;
-  Precision: number;
-  Type: string; // Propiedad Type para diferenciar entre "Contestados" y "Creados" -.-
+  id: number;
+  authorName: string;
+  title: string;
+  image?: string;
+  // Precision: number;
+  type: string; // Propiedad Type para diferenciar entre "Contestados" y "Creados" -.-
 }
 
 const items = ref([
   { label: 'Contestados' },
   { label: 'Creados' }
 ]);
-const selectedTab = ref('Contestados'); // Inicialmente se selecciona la pestaña "Contestados"
 
 const tests = ref<Test[]>([]);
 
 const fetchTests = async () => {
   try {
+    console.log(tabId.value)
     const token = localStorage.getItem('token');
     let response;
-    if (selectedTab.value === 'Contestados') {
+    if (tabId.value === 0) {
       response = await axios.get('https://localhost:7003/api/test/done', {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': ` Bearer ${token}`
         }
       });
     } else {
       response = await axios.get('https://localhost:7003/api/test/created', {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': ` Bearer ${token}`
         }
       });
     }
-    tests.value = response.data.map((test: Test) => ({ ...test, Type: selectedTab.value }));
+    tests.value = response.data.data
+    console.log(tests.value, response.data.data)
   } catch (error) {
     console.error('Error fetching tests:', error);
     throw error;
@@ -69,17 +78,27 @@ onMounted(() => {
   fetchTests();
 });
 
-const filteredTests = computed(() => {
-  return tests.value.filter(test => test.Type === selectedTab.value);
-});
-
-const handleTabChange = (event: any) => {
-  selectedTab.value = event.value.label; // Actualiza la pestaña seleccionada \(^0^)/
-  fetchTests(); // Se vuelven a obtener los tests al cambiar de pestaña
+const handleTabChange = (event: TabMenuChangeEvent) => {
+  tabId.value = event.index
+  fetchTests();
 };
+
+
 </script>
 
 <style scoped>
+.card-img {
+  object-fit: cover;
+  width: 100%;
+  aspect-ratio: 16/9;
+}
+
+.edit-icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
 .main {
   padding: 20px;
 }
