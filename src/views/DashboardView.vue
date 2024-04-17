@@ -2,17 +2,18 @@
 
     <div class="container">
       <h1>Recientes</h1>
-      <Carousel :value="tests" :numVisible="3" :numScroll="3" :responsiveOptions="responsiveOptions">
-      <i class="pi pi-spin pi-spinner loader" v-if="loading" />
-        <div class="grid-search" v-else :class="{ height: minheight }">
-            <Card style="width: 25rem; overflow: hidden; height: 325px;" v-for="test in tests" :key="test.id">
+      <Carousel :value="tests" :numVisible="3" :numScroll="3">
+
+        <template #item="slotProps">
+            <Card class="card">
                 <template #header>
-                    <img alt="user header" class="card-img" :src="test.image" />
+                    <img alt="user header" class="card-img" :src="slotProps.data.image" />
                 </template>
-                <template #title>{{ test.title }}</template>
-                <template #subtitle>{{ test.author }}</template>
+                <template #title>{{ slotProps.data.title }}</template>
+                <!-- <template #subtitle>{{ test.author }}</template> -->
             </Card>
-        </div>
+        </template>
+
       </Carousel>
       
     </div>
@@ -22,34 +23,19 @@
 <script lang="ts" setup>
 import Carousel from 'primevue/carousel';
 import Card from 'primevue/card';
-import { onMounted, ref, watch, type Ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { onMounted, ref, type Ref } from 'vue'
 import SearchService from '@/services/SearchService';
 import type { ICardTest } from '@/interfaces/ICardTest';
 
 const service = new SearchService()
-const first = ref(0)
 const rows = 6
-const router = useRoute()
 
 const minheight = ref(false)
 const loading = ref(true)
 const tests: Ref<ICardTest[]> = service.getTests()
 
-
-watch([first, () => router.params.query], async () => {
-    loading.value = true
-    await service.search(((first.value / 6) + 1) + '&pageSize=' + rows + '&Search=' + router.params.query);
-    loading.value = false
-    if (tests.value.length < 4) {
-        minheight.value = true
-    } else {
-        minheight.value = false
-    }
-})
-
 onMounted(async () => {
-    await service.search(((first.value / 6) + 1) + '&pageSize=' + rows + '&Search=' + router.params.query);
+    await service.search(1 + '&pageSize=' + rows);
     loading.value = false
     if (tests.value.length < 4) {
         minheight.value = true
@@ -91,9 +77,20 @@ const responsiveOptions = ref([
     margin: 0px 50px;
   }
 
+  .card {
+    width: 90%;
+    margin: 0 5%;
+  }
+
   .container h1{
     font-size: 30px;
     margin-bottom: 10px
+  }
+
+  .p-card-header .card-img {
+    width: 100%;
+    object-fit: cover;
+    aspect-ratio: 16 /9;
   }
 
   </style>
