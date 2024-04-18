@@ -6,7 +6,7 @@
             <h1>No se encontraron resultados</h1>
         </div>
         <div class="grid-search" v-else :class="{ height: minheight }">
-            <Card style="width: 25rem; overflow: hidden; height: 350px; cursor: pointer;" v-for="test in tests" :key="test.id" v-on:click="preview" >
+            <Card style="width: 25rem; overflow: hidden; height: 350px; cursor: pointer;" v-for="test in tests" :key="test.id" v-on:click="preview(test.id)" >
                 <template #header>
                     <img alt="user header" class="card-img" :src="test.image" />
                 </template>
@@ -38,9 +38,9 @@ const notFound = ref(false)
 const tests: Ref<ICardTest[]> = service.getTests()
 const totalTests = service.getCount()
 
-const preview = (/* test: ICardTest */) => {
+const preview = (id: number) => {
     console.log('mandando a test')
-    Router.push({ name: 'dashboard'})
+    Router.push({ name: 'test_preview', params: {id}})
 }
 
 watch([first, () => router.params.query], async () => {
@@ -78,7 +78,7 @@ onMounted(async () => {
 
 <style scoped>
 
-.card-img{
+.p-card-header .card-img{
     object-fit: cover;
     width: 100%;
     aspect-ratio: 16/9;

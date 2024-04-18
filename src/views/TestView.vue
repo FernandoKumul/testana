@@ -71,7 +71,7 @@ import router from '@/router';
 
 const service = new UserService()
 const route = useRoute()
-const username = ref(service.user.value?.name ?? '');
+const username = ref(service.user.value != null ? 'Ya tienes nombre' : '');
 const test = ref<null | ITestPreview>(null)
 const dataNotFound = ref(false)
 const toast = useToast()
@@ -91,11 +91,12 @@ const createUserAnswer = async () => {
 
     const newUserAnswer: INewUserAnswer = {
       testId: testId,
-      name: service.user.value ? null : username.value,
-      userId: service.user.value ? service.user.value.id : null
+      name: service.user.value != null ? null : username.value,
+      userId: service.user.value != null ? service.user.value.id : null
     }
 
     const userAnswerId = await UserAnswerService.create(newUserAnswer)
+    console.log(userAnswerId)
     router.push({name: 'reply-one', params: {idtest: test.value?.id}, query: {'user-answer': userAnswerId}})
     
   } catch (error) {
